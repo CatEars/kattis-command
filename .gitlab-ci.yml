@@ -1,4 +1,4 @@
-image: alpine-python3:latest
+image: frolvlad/alpine-python3:latest
 
 before_script:
   - python -v
