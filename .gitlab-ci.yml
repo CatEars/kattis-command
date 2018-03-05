@@ -1,6 +1,7 @@
 image: ubuntu
 
 before_script:
+  - apt-get update && apt-get upgrade
   - apt-get install python3-virtualenv
 
 mytestrunner:
