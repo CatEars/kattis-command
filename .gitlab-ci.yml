@@ -1,11 +1,10 @@
-image: frolvlad/alpine-python3:latest
+image: ubuntu
 
 before_script:
-  - python -v
-  - which python
-  - pip install -r requirements.txt
+  - apt-get install python3-virtualenv
 
 mytestrunner:
-    script:
-        - make install
-        - make test
+  script:
+    - make init
+    - make install
+    - make test
