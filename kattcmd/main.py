@@ -2,9 +2,9 @@ import os
 import pydash
 import click
 
-import doc
-import bus
-import core
+from kattcmd import doc
+from kattcmd import bus
+from kattcmd import core
 
 
 def interactive_mode(bus, plugins):
