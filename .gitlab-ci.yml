@@ -6,9 +6,7 @@ before_script:
   - source venv/bin/activate
   - pip install -r requirements.txt
 
-build:
-  - make install
-
-test:
-  - make test
-
+mytestrunner:
+    script:
+        - make install
+        - make test
