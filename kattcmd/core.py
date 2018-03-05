@@ -1,3 +1,4 @@
+import ast
 import os
 import configparser
 
@@ -26,7 +27,7 @@ def TouchStructure():
         }
 
         with open(kattcmd_file, 'w') as configfile:
-            configfile.write(config)
+            config.write(configfile)
 
         return True
     return False
@@ -42,7 +43,11 @@ def _ListExternals():
     config_path = os.path.expanduser('~/.kattcmd')
     config = configparser.ConfigParser()
     config.read(config_path)
-    return config['options']['plugins']
+
+    # See https://stackoverflow.com/questions/1894269/convert-string-representation-of-list-to-list-in-python
+    # for why we use ast.literal_eval here
+    L = ast.literal_eval(config['options']['plugins'])
+    return [x.strip() for x in L if x.strip()]
 
 
 def ListPlugins():
