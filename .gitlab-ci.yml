@@ -2,7 +2,8 @@ image: ubuntu
 
 before_script:
   - apt-get -qq update -y && apt-get -qq upgrade -y
-  - apt-get -qq install -y python3-virtualenv build-essential
+  - apt-get -qq install -y build-essential
+  - pip install virtualenv
 
 mytestrunner:
   script:
