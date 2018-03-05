@@ -1,14 +1,14 @@
 before_script:
-        - apt-get update -qq && apt-get install -y -qq python3.6
-        - python -v
-        - which python
-        - virtualenv venv -p python3
-        - source venv/bin/activate
-        - pip install -r requirements.txt
+  - apt-get update -qq && apt-get install -y -qq python3.6
+  - python -v
+  - which python
+  - virtualenv venv -p python3
+  - source venv/bin/activate
+  - pip install -r requirements.txt
 
 build:
-        - make install
+  - make install
 
 test:
-        - make test
+  - make test
 
