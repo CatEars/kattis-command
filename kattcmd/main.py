@@ -2,9 +2,7 @@ import os
 import pydash
 import click
 
-from kattcmd import doc
-from kattcmd import bus
-from kattcmd import core
+from kattcmd import doc, bus, core
 
 
 def interactive_mode(bus, plugins):
@@ -15,10 +13,12 @@ def command_mode(bus, plugins, command):
     pass
 
 
-@click.command()
-@click.option('--interactive', default=True, type=bool, help=doc.Interactive)
-@click.option('--command', default='', help=doc.Command)
-def main(interactive, command):
+@click.group()
+def cli_main():
+    pass
+
+
+def main():
     '''Command line tool for helping with administrative tasks around Kattis.'''
     the_bus = bus.Bus()
 
@@ -26,15 +26,18 @@ def main(interactive, command):
     plugins = core.ListPlugins()
     for plugin in plugins:
         plugin.Init(the_bus)
+        if hasattr(plugin, 'CLI'):
+            plugin.CLI(the_bus, cli_main)
 
+    cli_main()
 
-    # Check if interactive or not, if yes: run as interactive, if not then run command
-    if interactive:
-        interactive_mode(the_bus, plugins)
-    elif not command:
-        raise ValueError('Either you must specify a command or use interactive mode.')
-    else:
-        command_mode(the_bus, plugins, command)
+    # # Check if interactive or not, if yes: run as interactive, if not then run command
+    # if interactive:
+    #     interactive_mode(the_bus, plugins)
+    # elif not command:
+    #     raise ValueError('Either you must specify a command or use interactive mode.')
+    # else:
+    #     command_mode(the_bus, plugins, command)
 
 
 if __name__ == '__main__':

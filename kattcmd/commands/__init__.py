@@ -1,1 +1,1 @@
-from . import init, template, open, root
+from . import init, template, open, root, test_download

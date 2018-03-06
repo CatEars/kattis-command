@@ -2,7 +2,7 @@ import ast
 import os
 import configparser
 
-from . import commands
+from kattcmd import commands
 
 
 class CredentialsException(Exception):
@@ -37,7 +37,8 @@ def TouchStructure():
 
 def _ListBuiltins():
     '''Returns a list of all the builtin plugins.'''
-    return [commands.init, commands.template, commands.open]
+    return [commands.init, commands.template, commands.open, commands.root,
+            commands.test_download]
 
 
 def _ListExternals():

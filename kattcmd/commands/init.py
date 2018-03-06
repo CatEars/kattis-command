@@ -1,7 +1,7 @@
 '''Module that supports the implementation of the kattcmd init command.'''
 import os
 import pydash
-
+import click
 
 def _FilesExist(paths, get_missing=False):
     '''Returns true if all files exist.
@@ -120,3 +120,11 @@ def Init(bus):
     bus.provide('kattcmd:init:directory-partial', directory_partial)
     bus.provide('kattcmd:init:directory-created', directory_created)
 
+
+def CLI(bus, parent):
+
+    @click.command()
+    def init():
+        bus.call('kattcmd:init', bus)
+
+    parent.add_command(init)

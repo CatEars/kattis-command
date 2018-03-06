@@ -8,7 +8,7 @@ init:
 
 install:
 	. ./venv/bin/activate; \
-	pip install .; \
+	pip install --upgrade .; \
 
 
 test:

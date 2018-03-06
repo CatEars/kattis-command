@@ -1,4 +1,5 @@
 import os
+import click
 
 
 def OpenProblem(bus, problemname):
@@ -22,4 +23,15 @@ def Init(bus):
     bus.provide('kattcmd:open', OpenProblem)
     bus.provide('kattcmd:open:problem-opened', on_problem_opened)
     bus.provide('kattcmd:open:problem-already-opened', on_problem_already_opened)
+
+
+def CLI(bus, parent):
+
+    @click.command()
+    @click.argument('name')
+    def open(name):
+        bus.call('kattcmd:open', bus, name)
+        bus.call('kattcmd:testdownload', bus, name)
+
+    parent.add_command(open)
 
