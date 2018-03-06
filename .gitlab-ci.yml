@@ -1,12 +1,6 @@
-image: ubuntu
+image: whatisevenpineapple/python3-virtualmake:1.0.0
 
-before_script:
-  - apt-get -qq update -y && apt-get -qq upgrade -y
-  - apt-get -qq install -y python3-pip python3-dev build-essential
-  - pip3 install --upgrade pip
-  - pip3 install virtualenv
-
-mytestrunner:
+testrunner:
   script:
     - make init
     - make install
