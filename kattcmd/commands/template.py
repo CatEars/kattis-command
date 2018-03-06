@@ -8,7 +8,7 @@ class TemplateError(Exception):
 
 def _GetTemplateFolder():
     '''Returns the path to the template folder inside kattcmd.'''
-    my_dir = os.path.basename(__file__)
+    my_dir = os.path.dirname(__file__)
     path = os.path.join(my_dir, 'default_templates')
     return path
 
@@ -71,7 +71,7 @@ def AddCppTemplate(bus, folder, default=True):
         topic='kattcmd:template:cpp-added',
         folder=folder,
         default=default,
-        defaultname='cpp.py',
+        defaultname='cpp.cpp',
         fileending='.cpp'
     )
 
