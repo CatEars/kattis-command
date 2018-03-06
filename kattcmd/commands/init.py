@@ -58,7 +58,7 @@ def InitializeKattcmdDirectory(bus, folder=None):
     '''
     folder = folder or os.getcwd()
     expected_files = ['.kattcmddir']
-    expected_directories = ['library', 'templates', 'kattis']
+    expected_directories = ['library', 'templates', 'kattis', 'tests', 'build']
     files = [os.path.join(folder, fname) for fname in expected_files]
     dirs = [os.path.join(folder, d) for d in expected_directories]
 

@@ -19,15 +19,22 @@ def test_initialize():
     bus.listen('kattcmd:init:directory-partial', checkers[2])
     init.Init(bus)
 
-    bus.call('kattcmd:init', bus, folder=os.environ['HOME'])
+    home = os.environ['HOME']
+
+    bus.call('kattcmd:init', bus, folder=home)
     assert checkers[0].yay
     assert checkers[1].nay
     assert checkers[2].nay
 
-    bus.call('kattcmd:init', bus, folder=os.environ['HOME'])
+    expected_directories = ['templates', 'kattis', 'tests', 'build', 'library']
+    D = set(os.path.join(home, d) for d in expected_directories)
+    U = set(os.path.join(home, fname) for fname in os.listdir(home))
+    assert D.issubset(U)
+
+    bus.call('kattcmd:init', bus, folder=home)
     assert checkers[1].yay
     assert checkers[2].nay
 
-    os.rmdir(os.path.join(os.environ['HOME'], 'kattis'))
-    bus.call('kattcmd:init', bus, folder=os.environ['HOME'])
+    os.rmdir(os.path.join(home, 'kattis'))
+    bus.call('kattcmd:init', bus, folder=home)
     assert checkers[2].yay
