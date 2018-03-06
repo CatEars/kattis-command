@@ -6,12 +6,22 @@ class BusError(Exception):
     pass
 
 
+_storage = {}
+def Set(key, value):
+    _storage[key] = value
+
+def Get(key):
+    return _storage.get(key, None)
+
+
 class Bus:
 
     def __init__(self):
         self.ID = 0
         self.providers = {}
         self.listeners = collections.defaultdict(list)
+        self.provide('set', Set)
+        self.provide('get', Get)
 
 
     def provide(self, topic, callback):
