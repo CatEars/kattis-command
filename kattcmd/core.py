@@ -2,6 +2,8 @@ import ast
 import os
 import configparser
 
+from . import commands
+
 
 class CredentialsException(Exception):
     '''An exception type for missing credentials.'''
@@ -35,7 +37,7 @@ def TouchStructure():
 
 def _ListBuiltins():
     '''Returns a list of all the builtin plugins.'''
-    return []
+    return [commands.init]
 
 
 def _ListExternals():
