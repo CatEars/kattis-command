@@ -1,18 +1,9 @@
 import os
-import tempfile
 import configparser
 
 from kattcmd import core
+from .util import with_custom_home
 
-
-def with_custom_home(f):
-    '''Descriptor for tests that should run in their own isolated environment.'''
-    def inner(*args, **kwargs):
-        with tempfile.TemporaryDirectory() as tempdirname:
-            os.environ['HOME'] = tempdirname
-            f(*args, **kwargs)
-
-    return inner
 
 
 @with_custom_home

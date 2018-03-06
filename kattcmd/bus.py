@@ -46,7 +46,7 @@ class Bus:
                 for _, listener in self.listeners[topic]:
                     listener(*args, **kwargs)
 
-        def call_rpc():
+        def call_rpc(unused):
             return self.providers[topic](*args, **kwargs)
 
         call_listeners_and_rpc = pydash.flow(call_listeners, call_rpc)
