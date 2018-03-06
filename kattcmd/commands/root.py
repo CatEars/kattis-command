@@ -26,7 +26,7 @@ def FindKattisRoot(bus):
 
     # Check if there exists a default directory, else none exists
     config = configparser.ConfigParser()
-    config.read(os.expanduser('~/.kattcmd'))
+    config.read(os.path.expanduser('~/.kattcmd'))
 
     if 'options' in config and 'default-kattis' in config['options'] and \
        config['options']['default-kattis']:

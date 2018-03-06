@@ -1,5 +1,5 @@
-
-def OpenProblem(bus):
+def OpenProblem(bus, problemname):
+    # Create folders
     pass
 
 def Init(bus):

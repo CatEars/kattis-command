@@ -3,8 +3,20 @@ import tempfile
 from kattcmd import core
 from kattcmd import bus as busmodule
 
+def WithCustomCWD(f):
+    '''Descriptor for tests that should run in an isolated environment.'''
+    def inner(*args, **kwargs):
+        with tempfile.TemporaryDirectory() as tempdirname:
+            os.environ['HOME'] = tempdirname
+            old_cwd = os.getcwd()
+            os.chdir(tempdirname)
+            f(*args, **kwargs)
+            os.chdir(old_cwd)
+    return inner
+
+
 def WithCustomHome(f):
-    '''Descriptor for tests that should run in their own isolated environment.'''
+    '''Descriptor for tests that should run with special HOME variable.'''
     def inner(*args, **kwargs):
         with tempfile.TemporaryDirectory() as tempdirname:
             os.environ['HOME'] = tempdirname
