@@ -3,21 +3,18 @@ import os
 from kattcmd import core
 from kattcmd import bus as busmodule
 from kattcmd.commands import init
-from .util import with_custom_home, CallChecker
+from .util import WithCustomHome, WithModules, CallChecker
 
 
 
-@with_custom_home
-def test_initialize():
-    assert core.TouchStructure()
-
+@WithCustomHome
+@WithModules([init])
+def test_initialize(bus):
     checkers = [CallChecker(), CallChecker(), CallChecker()]
 
-    bus = busmodule.Bus()
     bus.listen('kattcmd:init:directory-created', checkers[0])
     bus.listen('kattcmd:init:directory-exists', checkers[1])
     bus.listen('kattcmd:init:directory-partial', checkers[2])
-    init.Init(bus)
 
     home = os.environ['HOME']
 

@@ -76,7 +76,6 @@ def InitializeKattcmdDirectory(bus, folder=None):
         expected_length = len(files) + len(dirs)
         return current_length != expected_length and current_length != 0
 
-
     def on_partial_exist():
         missing_files = _FilesExist(files, get_missing=True)
         missing_dirs = _DirectoriesExist(dirs, get_missing=True)

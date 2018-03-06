@@ -2,11 +2,11 @@ import os
 import configparser
 
 from kattcmd import core
-from .util import with_custom_home
+from .util import WithCustomHome
 
 
 
-@with_custom_home
+@WithCustomHome
 def test_creates_kattcmd_options():
     assert core.TouchStructure()
 
@@ -21,13 +21,13 @@ def test_creates_kattcmd_options():
     assert 'plugins' in config['options']
 
 
-@with_custom_home
+@WithCustomHome
 def test_touch_twice():
     assert core.TouchStructure()
     assert not core.TouchStructure()
 
 
-@with_custom_home
+@WithCustomHome
 def test_lists_plugins():
     assert core.TouchStructure()
     plugins = core.ListPlugins()

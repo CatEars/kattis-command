@@ -1,6 +1,6 @@
 import os
 
-from .util import with_custom_home, CallChecker
+from .util import WithCustomHome, CallChecker
 from kattcmd import core
 from kattcmd import bus as busmodule
 from kattcmd.commands import init, template
@@ -31,11 +31,11 @@ def do_template_test_with_type(topic, listen_topic):
 
 
 
-@with_custom_home
+@WithCustomHome
 def test_cpp_template():
     do_template_test_with_type('kattcmd:template:cpp',
                                'kattcmd:template:cpp-added')
-@with_custom_home
+@WithCustomHome
 def test_py_template():
     do_template_test_with_type('kattcmd:template:python',
                                'kattcmd:template:python-added')
