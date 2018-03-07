@@ -27,11 +27,29 @@ def Init(bus):
 
 def CLI(bus, parent):
 
+    def OnProblemOpen(path):
+        name = os.path.basename(path)
+        click.echo('Opened {} for solving'.format(name))
+
+    def OnProblemAlreadyOpened(path):
+        name = os.path.basename(path)
+        click.echo('{} is already opened, it seems like'.format(name))
+
+    def OnTestsLoaded(testdir):
+        relative = os.path.relpath(testdir)
+        click.echo('Tests put inside of {}'.format(relative))
+
+    def OnTestFail(response):
+        click.echo('Could not automatically download tests.')
+
     @click.command()
     @click.argument('name')
     def open(name):
+        bus.listen('kattcmd:open:problem-opened', OnProblemOpen)
+        bus.listen('kattcmd:testdownload:downloaded', OnTestsLoaded)
+        bus.listen('kattcmd:testdownload:bad-status', OnTestFail)
+
         bus.call('kattcmd:open', bus, name)
         bus.call('kattcmd:testdownload', bus, name)
 
     parent.add_command(open)
-
