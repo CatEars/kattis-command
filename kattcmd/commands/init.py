@@ -123,8 +123,26 @@ def Init(bus):
 
 def CLI(bus, parent):
 
+    def OnDirectoryExists(folder):
+        path = os.path.relpath(folder)
+        click.echo('It seems like this already is a kattcmd directory!'.format(folder))
+        click.echo('Please run `kattcmd init` in an empty directory!')
+
+    def OnDirectoryPartial(folder, expected, missing):
+        click.echo('This seems to already be a kattcmd directory, but some things are missing:')
+        for item in missing:
+            click.echo('   - {}'.format(item))
+
+    def OnDirectoryCreate(folder):
+        click.echo('Kattcmd folder initialized.')
+        click.secho('Happy solving!', bold=True)
+
+
     @click.command()
     def init():
+        bus.listen('kattcmd:init:directory-exists', OnDirectoryExists)
+        bus.listen('kattcmd:init:directory-partial', OnDirectoryPartial)
+        bus.listen('kattcmd:init:directory-created', OnDirectoryCreate)
         bus.call('kattcmd:init', bus)
 
     parent.add_command(init)
