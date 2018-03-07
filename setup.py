@@ -13,5 +13,11 @@ setup(
     download_url='httsp://git.lysator.liu.se/catears/kattis-command/master/archive.tar.gz',
     keywords=['kattis', 'cli', 'competitive programming'],
     scripts=['bin/kattcmd'],
+    package_dir={
+        'kattcmd.commands': 'kattcmd/commands'
+    },
+    package_data={
+        'kattcmd.commands': ['default_templates/*']
+    },
     classifiers=[]
 )
