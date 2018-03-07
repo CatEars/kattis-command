@@ -64,6 +64,10 @@ def CLI(bus, parent):
         click.echo('Could not find problem {}'.format(problem))
         exit(0)
 
+    def OnFileInfoReplaced(path):
+        relative = os.path.relpath(path)
+        click.echo('Updated {} with information (date etc.)'.format(relative))
+
     @click.command()
     @click.option('--force', type=bool, default=False, is_flag=True, help='Open a problem even if it does not exist on kattis.')
     @click.argument('name')
@@ -77,5 +81,9 @@ def CLI(bus, parent):
 
         bus.call('kattcmd:open', bus, name)
         bus.call('kattcmd:testdownload', bus, name)
+        root = bus.call('kattcmd:find-root', bus)
+        target = os.path.join(root, 'kattis', name)
+        path = bus.call('kattcmd:template:python', bus, target)
+        bus.call('kattcmd:template:add-info', bus, path)
 
     parent.add_command(open)
