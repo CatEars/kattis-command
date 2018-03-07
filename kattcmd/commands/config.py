@@ -1,10 +1,11 @@
 import os
 import configparser
+import click
 
 
 def _SaveToConfigFile(configfile, key, value):
     config = configparser.ConfigParser()
-    
+
     if os.path.exists(configfile):
         config.read(configfile)
 
@@ -25,7 +26,7 @@ def _LoadFromConfigFile(configfile, key):
         return config['variables'].get(key, None)
     except:
         return None
-        
+
 
 def _AddToConfig(bus, root, fname, topic, key, value):
     configfile = os.path.join(root, fname)
@@ -122,3 +123,37 @@ def Init(bus):
     bus.provide('kattcmd:config:load-user-success', OnSuccessfulLoad)
     bus.provide('kattcmd:config:load-repo-fail', OnFailLoad)
     bus.provide('kattcmd:config:load-user-fail', OnFailLoad)
+
+
+def CLI(bus, parent):
+
+    @click.command()
+    @click.argument('key', type=str)
+    @click.argument('value', type=str)
+    @click.option('--user', default=False, type=bool, help='Store value at user level')
+    def setval(key, value, user):
+        def OnSuccess(key, value):
+            if user:
+                click.echo('{}={} set in user config'.format(key, value))
+            else:
+                click.echo('{}={} set in repo config'.format(key, value))
+
+        bus.listen('kattcmd:config:add-repo-success', OnSuccess)
+        if user:
+            bus.call('kattcmd:config:add-user', bus, key, value)
+        else:
+            bus.call('kattcmd:config:add-repo', bus, key, value)
+
+
+    @click.command()
+    @click.argument('key', type=str)
+    @click.option('--user', default=False, type=bool, help='Load value at user level')
+    def getval(key, user):
+        if user:
+            click.echo(bus.call('kattcmd:config:load-user', bus, key))
+        else:
+            click.echo(bus.call('kattcmd:config:load-repo', bus, key))
+
+
+    parent.add_command(setval)
+    parent.add_command(getval)
