@@ -130,7 +130,7 @@ def CLI(bus, parent):
     @click.command()
     @click.argument('key', type=str)
     @click.argument('value', type=str)
-    @click.option('--user', default=False, type=bool, help='Store value at user level')
+    @click.option('--user', default=False, type=bool, is_flag=True, help='Store value at user level')
     def setval(key, value, user):
         def OnSuccess(key, value):
             if user:
@@ -147,7 +147,7 @@ def CLI(bus, parent):
 
     @click.command()
     @click.argument('key', type=str)
-    @click.option('--user', default=False, type=bool, help='Load value at user level')
+    @click.option('--user', default=False, type=bool, is_flag=True, help='Load value at user level')
     def getval(key, user):
         if user:
             click.echo(bus.call('kattcmd:config:load-user', bus, key))
