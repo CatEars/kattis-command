@@ -15,7 +15,7 @@ def OpenProblem(bus, problemname):
     root = bus.call('kattcmd:find-root', bus)
     problem_path = os.path.join(root, 'kattis', problemname)
 
-    if not DoesProblemExist(problemname):
+    if not os.environ.get('FORCE_OPEN', '') and not DoesProblemExist(problemname):
         bus.call('kattcmd:open:problem-doesnt-exist', problemname)
 
     elif os.path.isdir(problem_path):
@@ -65,12 +65,15 @@ def CLI(bus, parent):
         exit(0)
 
     @click.command()
+    @click.option('--force', type=bool, default=False, is_flag=True, help='Open a problem even if it does not exist on kattis.')
     @click.argument('name')
-    def open(name):
+    def open(name, force):
         bus.listen('kattcmd:open:problem-opened', OnProblemOpen)
         bus.listen('kattcmd:testdownload:downloaded', OnTestsLoaded)
         bus.listen('kattcmd:testdownload:bad-status', OnTestFail)
         bus.listen('kattcmd:open:problem-doesnt-exist', OnProblemDoesntExist)
+        if force:
+            os.environ['FORCE_OPEN'] = '1'
 
         bus.call('kattcmd:open', bus, name)
         bus.call('kattcmd:testdownload', bus, name)
