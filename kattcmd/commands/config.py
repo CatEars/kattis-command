@@ -1,0 +1,124 @@
+import os
+import configparser
+
+
+def _SaveToConfigFile(configfile, key, value):
+    config = configparser.ConfigParser()
+    
+    if os.path.exists(configfile):
+        config.read(configfile)
+
+    if not 'variables' in config:
+        config['variables'] = {}
+
+    config['variables'][key] = value
+    with open(configfile, 'w') as f:
+        config.write(f)
+
+
+def _LoadFromConfigFile(configfile, key):
+    try:
+        config = configparser.ConfigParser()
+        config.read(configfile)
+        if not 'variables' in config:
+            config['variables'] = {}
+        return config['variables'].get(key, None)
+    except:
+        return None
+        
+
+def _AddToConfig(bus, root, fname, topic, key, value):
+    configfile = os.path.join(root, fname)
+    _SaveToConfigFile(configfile, key, value)
+    bus.call(topic, key, value)
+
+
+def _LoadFromConfig(bus, root, fname, success_topic, fail_topic, key, default=None):
+    configfile = os.path.join(root, fname)
+    value = _LoadFromConfigFile(configfile, key)
+
+    if value is None:
+        bus.call(fail_topic, key)
+        return default
+    else:
+        bus.call(success_topic, key, value)
+        return value
+
+
+def AddToRepoConfig(bus, key, value):
+    '''Adds a key to the config of the current repo.'''
+    _AddToConfig(
+        bus=bus,
+        fname='.kattcmddir',
+        root=bus.call('kattcmd:find-root', bus),
+        topic='kattcmd:config:add-repo-success',
+        key=key,
+        value=value
+    )
+
+
+def LoadFromRepoConfig(bus, key, default=None):
+    '''Returns a value from the config of the current repo, or the deafult
+value if not existing.'''
+    return _LoadFromConfig(
+        bus=bus,
+        root=bus.call('kattcmd:find-root', bus),
+        fname='.kattcmddir',
+        success_topic='kattcmd:config:load-repo-success',
+        fail_topic='kattcmd:config:load-repo-fail',
+        key=key,
+        default=default
+    )
+
+
+def AddToUserConfig(bus, key, value):
+    '''Adds a key to the config of the user.'''
+    _AddToConfig(
+        bus=bus,
+        fname='.kattcmd',
+        root=os.path.expanduser('~'),
+        topic='kattcmd:config:add-user-success',
+        key=key,
+        value=value
+    )
+
+
+def LoadFromUserConfig(bus, key, default=None):
+    '''Loads a key from the config of the user.'''
+    return _LoadFromConfig(
+        bus=bus,
+        root=os.path.expanduser('~'),
+        fname='.kattcmd',
+        success_topic='kattcmd:config:load-user-success',
+        fail_topic='kattcmd:config:load-user-fail',
+        key=key,
+        default=default
+    )
+
+
+def Init(bus):
+
+    def OnSuccessfulAddition(key, value):
+        '''Event for when something was successfully added to a repo config.'''
+
+    def OnFailAddition(key, value):
+        '''Event for when adding something to a config failed.'''
+
+    def OnSuccessfulLoad(key, value):
+        '''Event for when a value was loaded successfully.'''
+
+    def OnFailLoad(key):
+        '''Event for when a value failed to load.'''
+
+    bus.provide('kattcmd:config:add-repo', AddToRepoConfig)
+    bus.provide('kattcmd:config:load-repo', LoadFromRepoConfig)
+    bus.provide('kattcmd:config:add-user', AddToUserConfig)
+    bus.provide('kattcmd:config:load-user', LoadFromUserConfig)
+
+    bus.provide('kattcmd:config:add-repo-success', OnSuccessfulAddition)
+    bus.provide('kattcmd:config:add-user-success', OnSuccessfulAddition)
+
+    bus.provide('kattcmd:config:load-repo-success', OnSuccessfulLoad)
+    bus.provide('kattcmd:config:load-user-success', OnSuccessfulLoad)
+    bus.provide('kattcmd:config:load-repo-fail', OnFailLoad)
+    bus.provide('kattcmd:config:load-user-fail', OnFailLoad)
