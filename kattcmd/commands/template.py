@@ -110,8 +110,6 @@ def AddAllDefaultTemplates(bus, katthome):
     def AddTemplate(templatename):
         source = os.path.join(_GetTemplateFolder(), templatename)
         target = os.path.join(katthome, 'templates', templatename)
-        print(source, target)
-        print(katthome, os.listdir(katthome))
         shutil.copyfile(source, target)
     AddTemplate('py3.py')
     AddTemplate('cpp.cpp')

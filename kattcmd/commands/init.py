@@ -153,6 +153,6 @@ def CLI(bus, parent):
         if not home:
             return
         bus.listen('kattcmd:template:default-added', OnTemplatesAdded)
-        bus.call('kattcmd:template:default', home)
+        bus.call('kattcmd:template:default', bus, home)
 
     parent.add_command(init)
