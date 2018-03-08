@@ -10,8 +10,11 @@ def WithCustomCWD(f):
             os.environ['HOME'] = tempdirname
             old_cwd = os.getcwd()
             os.chdir(tempdirname)
-            f(*args, **kwargs)
-            os.chdir(old_cwd)
+
+            try:
+                f(*args, **kwargs)
+            finally:
+                os.chdir(old_cwd)
     return inner
 
 
@@ -61,3 +64,12 @@ class CallChecker:
     @property
     def nay(self):
         return not self.is_called
+
+def ExecuteRPC(bus, topic, answertopic, *args, **kwargs):
+    checker = CallChecker()
+    bus.listen(answertopic, checker)
+    result = bus.call(topic, *args, **kwargs)
+    return result, checker
+
+def RunWithChecker(bus, topic, answertopic, *args, **kwargs):
+    return ExecuteRPC(bus, topic, answertopic, *args, **kwargs)[1]

@@ -10,7 +10,7 @@ def _GetBuildFolder(bus):
 
 def _TouchOutputFolder(bus, problemname):
     '''Creates the output folder if it does not exist.'''
-    build_folder = _GetBuildFolder()
+    build_folder = _GetBuildFolder(bus)
     output_folder = os.path.join(build_folder, problemname)
 
     try:
@@ -59,12 +59,13 @@ def CompilePython(bus, problemname):
     '''"Compiles" python for solving problem.'''
     paths = _CopyAllToBuildFolder(bus, problemname, ['.py'])
     bus.call('kattcmd:compile:python-compiled', paths)
+    return paths
 
 
 def CompileCpp(bus, problemname):
     '''Compiles C++ and puts it into the build folder'''
-    paths = _CopyAllToBuildFolder(bus, problemname, ['.c', '.cc', '.cxx', '.cpp',
-                                                     '.h', '.hh', '.hxx', '.hpp'])
+    extensions = ['.c', '.cc', '.cxx', '.cpp', '.h', '.hh', '.hxx', '.hpp']
+    paths = _CopyAllToBuildFolder(bus, problemname, extensions)
     files = [os.path.basename(f) for f in paths]
 
     def IsCppFile(f):
@@ -89,6 +90,7 @@ def CompileCpp(bus, problemname):
         os.system(compile_command)
         os.chdir(old_cwd)
         bus.call('kattcmd:compile:cpp-compiled', output_binary)
+        return output_binary
     except:
         bus.call('kattcmd:compile:cpp-compile-failed', compile_command)
 
