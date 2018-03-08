@@ -139,7 +139,7 @@ def CLI(bus, parent):
 
     def OnTemplatesAdded(folder):
         relative = os.path.relpath(folder)
-        click.echo('Added templates to {}'.format(relative))
+        click.echo('Added all default templates to: {}'.format(relative))
         click.secho('Happy Coding!', bold=True)
 
     @click.command()
