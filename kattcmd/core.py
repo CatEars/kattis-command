@@ -38,7 +38,7 @@ def TouchStructure():
 def _ListBuiltins():
     '''Returns a list of all the builtin plugins.'''
     return [commands.init, commands.template, commands.open, commands.root,
-            commands.test_download, commands.config]
+            commands.test_download, commands.config, commands.compile]
 
 
 def _ListExternals():
