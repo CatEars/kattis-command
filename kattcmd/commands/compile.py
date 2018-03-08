@@ -98,7 +98,7 @@ def CompileCpp(bus, problemname):
 def FindCppCompileCommand(bus):
     '''Returns either the user-set compile command or the default one.'''
     default_compile = 'g++ -std=c++14 -O2 -pedantic -Wall FILES -o BINARY'
-    user_compile = bus.call('kattcmd:config:load-user', key='cppcompile')
+    user_compile = bus.call('kattcmd:config:load-user', bus, key='cppcompile')
     return user_compile or default_compile
 
 

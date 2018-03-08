@@ -2,6 +2,8 @@ import os
 import tempfile
 from kattcmd import core
 from kattcmd import bus as busmodule
+from kattcmd.commands import open as open_command, compile as compile_command, \
+    init, root, config, template, test_download
 
 def WithCustomCWD(f):
     '''Descriptor for tests that should run in an isolated environment.'''
@@ -49,6 +51,13 @@ def WithModules(modulelist):
 
     return wrapper
 
+
+def WithMostModules(f):
+    return WithModules([
+        init, root, config, template, test_download, open_command, compile_command
+    ])(f)
+
+
 class CallChecker:
 
     def __init__(self):
@@ -65,11 +74,29 @@ class CallChecker:
     def nay(self):
         return not self.is_called
 
+
 def ExecuteRPC(bus, topic, answertopic, *args, **kwargs):
     checker = CallChecker()
     bus.listen(answertopic, checker)
     result = bus.call(topic, *args, **kwargs)
     return result, checker
 
+
 def RunWithChecker(bus, topic, answertopic, *args, **kwargs):
     return ExecuteRPC(bus, topic, answertopic, *args, **kwargs)[1]
+
+
+def ExecuteInOrder(bus, calls):
+    for item in calls:
+        topic, answertopic = item[:2]
+        arguments = []
+        kwargs = {}
+        if len(item) >= 3:
+            arguments = item[2]
+        if len(item) >= 4:
+            kwargs = item[3]
+
+        checker = CallChecker()
+        bus.listen(answertopic, checker)
+        result = bus.call(topic, bus, *arguments, **kwargs)
+        yield result, checker

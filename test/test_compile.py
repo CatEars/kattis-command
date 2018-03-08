@@ -1,36 +1,39 @@
 import os
 
-from .util import WithCustomCWD, WithModules, CallChecker, ExecuteRPC, RunWithChecker
+from .util import WithCustomCWD, WithMostModules, CallChecker, ExecuteInOrder
 from kattcmd import bus as busmodule
-from kattcmd.commands import init, template, open as open_command, root, compile as compile_command
-
-def InitAndOpenProblem(bus, problemname):
-    assert RunWithChecker(bus, 'kattcmd:init', 'kattcmd:init:directory-created', bus).yay
-    assert RunWithChecker(bus, 'kattcmd:open', 'kattcmd:open:problem-opened', bus, problemname).yay
 
 
 @WithCustomCWD
-@WithModules([init, root, open_command, template, compile_command])
+@WithMostModules
 def test_CompilePython(bus):
     problemname = 'carrots'
-    InitAndOpenProblem(bus, problemname)
+    target_template = os.path.join(os.environ['HOME'], 'kattis', problemname)
+    calls = [
+        ('kattcmd:init', 'kattcmd:init:directory-created'),
+        ('kattcmd:open', 'kattcmd:open:problem-opened', [problemname]),
+        ('kattcmd:template:python', 'kattcmd:template:python-added', [target_template]),
+        ('kattcmd:compile:python', 'kattcmd:compile:python-compiled', [problemname])
+    ]
 
-    problemfolder = os.path.join(os.environ['HOME'], 'kattis', problemname)
-    topic = 'kattcmd:template:python'
-    answertopic = 'kattcmd:template:python-added'
-    assert RunWithChecker(bus, topic, answertopic, bus, problemfolder).yay
-
-    topic = 'kattcmd:compile:python'
-    answertopic = 'kattcmd:compile:python-compiled'
-    result, checker = ExecuteRPC(bus, topic, answertopic, bus, problemname)
-    assert checker.yay
-
+    assert all(checker.yay for _, checker in ExecuteInOrder(bus, calls))
     buildpath = os.path.join(os.environ['HOME'], 'build', problemname)
-    outputfiles = [os.path.basename(fpath) for fpath in result]
-    assert set(os.listdir(buildpath)) == set(outputfiles)
+    assert 'carrots.py' in os.listdir(buildpath)
 
 
 @WithCustomCWD
-@WithModules([init, root, open_command, template, compile_command])
+@WithMostModules
 def test_CompileCpp(bus):
-    pass
+    problemname = 'carrots'
+    target_template = os.path.join(os.environ['HOME'], 'kattis', problemname)
+    calls = [
+        ('kattcmd:init', 'kattcmd:init:directory-created'),
+        ('kattcmd:open', 'kattcmd:open:problem-opened', [problemname]),
+        ('kattcmd:template:cpp', 'kattcmd:template:cpp-added', [target_template]),
+        ('kattcmd:compile:cpp', 'kattcmd:compile:cpp-compiled', [problemname])
+    ]
+
+    assert all(checker.yay for _, checker in ExecuteInOrder(bus, calls))
+    buildpath = os.path.join(os.environ['HOME'], 'build', problemname)
+    assert 'carrots' in os.listdir(buildpath)
+
