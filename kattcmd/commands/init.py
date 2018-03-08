@@ -62,21 +62,21 @@ def InitializeKattcmdDirectory(bus, folder=None):
     files = [os.path.join(folder, fname) for fname in expected_files]
     dirs = [os.path.join(folder, d) for d in expected_directories]
 
-    def is_kattcmd_already():
+    def IsKattcmdAlready():
         return _FilesExist(files) and _DirectoriesExist(dirs)
 
-    def on_directory_exist():
+    def OnDirectoryExist():
         bus.call('kattcmd:init:directory-exists', folder)
 
 
-    def is_partial_directory():
+    def IsPartialDirectory():
         missing_files = _FilesExist(files, get_missing=True)
         missing_dirs = _DirectoriesExist(dirs, get_missing=True)
         current_length = len(missing_files) + len(missing_dirs)
         expected_length = len(files) + len(dirs)
         return current_length != expected_length and current_length != 0
 
-    def on_partial_exist():
+    def OnPartialExist():
         missing_files = _FilesExist(files, get_missing=True)
         missing_dirs = _DirectoriesExist(dirs, get_missing=True)
         missing = missing_files + missing_dirs
@@ -84,7 +84,7 @@ def InitializeKattcmdDirectory(bus, folder=None):
         bus.call('kattcmd:init:directory-partial', folder, expected, missing)
 
 
-    def do_init():
+    def DoInit():
         for dpath in dirs:
             os.mkdir(dpath)
 
@@ -95,9 +95,9 @@ def InitializeKattcmdDirectory(bus, folder=None):
         bus.call('kattcmd:init:directory-created', folder)
 
     return pydash.cond([
-        (is_kattcmd_already, on_directory_exist),
-        (is_partial_directory, on_partial_exist),
-        (pydash.stub_true, do_init)
+        (IsKattcmdAlready, OnDirectoryExist),
+        (IsPartialDirectory, OnPartialExist),
+        (pydash.stub_true, DoInit)
     ])()
 
 
@@ -135,8 +135,12 @@ def CLI(bus, parent):
 
     def OnDirectoryCreate(folder):
         click.echo('Kattcmd folder initialized.')
-        click.secho('Happy solving!', bold=True)
+        bus.call('set', 'katthome', folder)
 
+    def OnTemplatesAdded(folder):
+        relative = os.path.relpath(folder)
+        click.echo('Added templates to {}'.format(relative))
+        click.secho('Happy Coding!', bold=True)
 
     @click.command()
     def init():
@@ -144,5 +148,11 @@ def CLI(bus, parent):
         bus.listen('kattcmd:init:directory-partial', OnDirectoryPartial)
         bus.listen('kattcmd:init:directory-created', OnDirectoryCreate)
         bus.call('kattcmd:init', bus)
+
+        home = bus.call('get', 'katthome')
+        if not home:
+            return
+        bus.listen('kattcmd:template:default-added', OnTemplatesAdded)
+        bus.call('kattcmd:template:default', home)
 
     parent.add_command(init)

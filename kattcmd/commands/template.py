@@ -105,6 +105,19 @@ def AddCppTemplate(bus, folder, default=True):
     )
 
 
+def AddAllDefaultTemplates(bus, katthome):
+    '''Adds all default templates to the templates folder.'''
+    def AddTemplate(templatename):
+        source = os.path.join(_GetTemplateFolder(), templatename)
+        target = os.path.join(katthome, 'templates', templatename)
+        print(source, target)
+        print(katthome, os.listdir(katthome))
+        shutil.copyfile(source, target)
+    AddTemplate('py3.py')
+    AddTemplate('cpp.cpp')
+    bus.call('kattcmd:template:default-added', os.path.join(katthome, 'templates'))
+
+
 def Init(bus):
 
     def PythonAdded(folder, templatepath):
@@ -116,10 +129,16 @@ def Init(bus):
     def OnFileInfoAdded(path):
         '''Event for changing info in file with default info.'''
 
+    def OnAllDefaultAdded(path):
+        '''Event for when all default templates are added to a folder.'''
+
     bus.provide('kattcmd:template:python', AddPython3Template)
     bus.provide('kattcmd:template:cpp', AddCppTemplate)
+    bus.provide('kattcmd:template:default', AddAllDefaultTemplates)
+
     bus.provide('kattcmd:template:python-added', PythonAdded)
     bus.provide('kattcmd:template:cpp-added', CppAdded)
+    bus.provide('kattcmd:template:default-added', OnAllDefaultAdded)
 
     bus.provide('kattcmd:template:add-info', ReplaceFileWithInfo)
     bus.provide('kattcmd:template:file-info-added', OnFileInfoAdded)
