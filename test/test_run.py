@@ -34,11 +34,11 @@ def test_PythonRun(bus):
 
     checker = CallChecker()
     bus.listen('kattcmd:run:executed', checker)
-    processes = bus.call('kattcmd:run:python', bus, [inputfname], problemname)
+    outputs = bus.call('kattcmd:run:python', bus, [inputfname], problemname)
     assert checker.yay
 
-    assert len(processes) == 1
-    process = processes[0]
-    assert process.returncode == 0
-    assert process.stdout.strip() == "1"
+    assert len(outputs) == 1
+    output = outputs[0]
+    assert isinstance(output, str)
+    assert output.strip() == "1"
 

@@ -2,6 +2,8 @@ import os
 import subprocess
 
 
+
+
 def RunPythonAgainstTests(bus, inputs, problemname):
     '''Run python program against given inputs and return subprocesses/errors.'''
     home = bus.call('kattcmd:find-root', bus)
@@ -18,27 +20,21 @@ def RunPythonAgainstTests(bus, inputs, problemname):
 
     def RunAgainstSingleInput(inputfile):
         abspath = os.path.abspath(inputfile)
-        with open(inputfile, 'r') as f:
-            data = f.read()
-        solution_folder = os.path.dirname(executable)
-        command = 'python {}.py'.format(problemname)
+        command = 'python {} < {}'.format(executable, abspath)
         try:
-            process = subprocess.run(
+            output = subprocess.check_output(
                 command,
                 timeout=timeout,
-                cwd=solution_folder,
-                input=str(data),
-                encoding='utf-8',
                 shell=True,
-                stdout=subprocess.PIPE
+                encoding='utf-8'
             )
-            return process
+            return output
         except subprocess.TimeoutExpired as e:
             return e
         except subprocess.CalledProcessError as e:
             return e
-    processes = [RunAgainstSingleInput(inputfile) for inputfile in inputs]
 
+    processes = [RunAgainstSingleInput(inputfile) for inputfile in inputs]
     bus.call('kattcmd:run:executed', problemname, 'python', inputs, processes)
     return processes
 
