@@ -3,7 +3,7 @@ import tempfile
 from kattcmd import core
 from kattcmd import bus as busmodule
 from kattcmd.commands import open as open_command, compile as compile_command, \
-    init, root, config, template, test_download, test
+    init, root, config, template, test_download, test, run
 
 def WithCustomCWD(f):
     '''Descriptor for tests that should run in an isolated environment.'''
@@ -54,7 +54,8 @@ def WithModules(modulelist):
 
 def WithMostModules(f):
     return WithModules([
-        init, root, config, template, test_download, open_command, compile_command, test
+        init, root, config, template, test_download, open_command, compile_command, test,
+        run
     ])(f)
 
 
