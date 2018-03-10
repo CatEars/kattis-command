@@ -25,9 +25,10 @@ def RunPythonAgainstTests(bus, inputs, problemname):
             output = subprocess.check_output(
                 command,
                 timeout=timeout,
-                shell=True,
-                encoding='utf-8'
+                shell=True
             )
+            if isinstance(output, bytes):
+                output = output.decode('utf-8')
             return output
         except subprocess.TimeoutExpired as e:
             return e
