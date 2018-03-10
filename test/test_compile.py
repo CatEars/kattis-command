@@ -1,7 +1,6 @@
 import os
 
-from .util import WithCustomCWD, WithMostModules, CallChecker, ExecuteInOrder
-from kattcmd import bus as busmodule
+from .util import WithCustomCWD, WithMostModules, ExecuteInOrder
 
 
 @WithCustomCWD

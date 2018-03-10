@@ -3,7 +3,7 @@ import os
 
 def _GetTestFolder(root, problemname):
     '''Returns the test folder for a problem.'''
-    return os.path.join(root, 'test', problemname)
+    return os.path.join(root, 'tests', problemname)
 
 
 def _GetTestFilesForProblem(root, problemname):
