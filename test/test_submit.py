@@ -17,11 +17,11 @@ def ShouldSkipSubmit():
         'KATTIS_LOGIN',
         'KATTIS_SUBMISSION'
     ]
-
     return not all(map(os.getenv, expected_envs))
 
 
 def SetupKattisRC():
+
     home = os.environ['HOME']
     fpath = os.path.join(home, '.kattisrc')
 
@@ -48,7 +48,7 @@ def SetupKattisRC():
 
 
 @pytest.mark.submission
-@pytest.mark.skipif(ShouldSkipSubmit, reason='No environment variables for running submit')
+@pytest.mark.skipif(ShouldSkipSubmit(), reason='No environment variables for running submit')
 @WithCustomCWD
 @WithMostModules
 def test_SubmitCarrotsWithPython(bus):
@@ -71,8 +71,9 @@ def test_SubmitCarrotsWithPython(bus):
 
     # Submit
     calls = [
-        ('kattcmd:submit:python', 'kattcmd:submitted', [problemname])
+        ('kattcmd:submit:python', 'kattcmd:submit:submitted', [problemname])
     ]
+
     results = list(ExecuteInOrder(bus, calls))
     assert len(results) == 1
 

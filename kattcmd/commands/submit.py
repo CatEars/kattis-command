@@ -98,7 +98,7 @@ def SubmitPythonProblem(bus, problemname):
         return
 
     bus.call('kattcmd:submit:submitted', submit_response)
-
+    return submit_response
 
 def Init(bus):
 
