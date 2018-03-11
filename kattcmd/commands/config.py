@@ -12,7 +12,7 @@ def _SaveToConfigFile(configfile, key, value):
     if not 'variables' in config:
         config['variables'] = {}
 
-    if key in config['options']:
+    if 'options' in config and key in config['options']:
         config['options'][key] = value
     else:
         config['variables'][key] = value
@@ -25,7 +25,7 @@ def _LoadFromConfigFile(configfile, key):
     try:
         config = configparser.ConfigParser()
         config.read(configfile)
-        if key in config['options']:
+        if 'options' in config and key in config['options']:
             return config['options'][key]
 
         if not 'variables' in config:

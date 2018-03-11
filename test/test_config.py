@@ -23,7 +23,7 @@ def test_AddToUserConfig(bus):
 
     bus.call('kattcmd:config:load-user', bus, str(randint(0, 10000)))
     assert checker_fail.yay
-    
+
 
 @WithCustomCWD
 @WithModules([init, root, config])
@@ -48,4 +48,4 @@ def test_AddToRepoConfig(bus):
 
     bus.call('kattcmd:config:load-repo', bus, str(randint(0, 10000)))
     assert checker_fail.yay
-    
+
