@@ -98,7 +98,18 @@ def CLI(bus, parent):
         bus.call('kattcmd:testdownload', bus, name)
         root = bus.call('kattcmd:find-root', bus)
         target = os.path.join(root, 'kattis', name)
-        path = bus.call('kattcmd:template:python', bus, target)
-        bus.call('kattcmd:template:add-info', bus, path)
+        preference = bus.call('kattcmd:config:load-user', bus, 'template-type', default='python')
+
+        if preference == 'python':
+            path = bus.call('kattcmd:template:python', bus, target)
+            bus.call('kattcmd:template:add-info', bus, path)
+
+        elif preference == 'cpp':
+            path = bus.call('kattcmd:template:cpp', bus, target)
+            bus.call('kattcmd:template:add-info', bus. path)
+
+        else:
+            raise ValueError('Bad template preference, check "template-type" in your ' + \
+                             'user configuration!')
 
     parent.add_command(open)
