@@ -1,9 +1,7 @@
 init:
 	virtualenv venv -p python3
-	( \
-		. ./venv/bin/activate; \
-		pip install -r requirements.txt; \
-	)
+	. ./venv/bin/activate; \
+	pip install -r requirements.txt
 
 
 install:
@@ -13,7 +11,12 @@ install:
 
 test:
 	. ./venv/bin/activate; \
-	pytest test; \
+	pytest test -m "not submission"; \
 
 
-.PHONY: init install test
+testall:
+	. ./venv/bin/activate; \
+	pytest test -v; \
+
+
+.PHONY: init install test testall

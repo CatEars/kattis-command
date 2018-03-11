@@ -4,4 +4,4 @@ testrunner:
   script:
     - make init
     - make install
-    - make test
+    - make testall
