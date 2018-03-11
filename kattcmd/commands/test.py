@@ -54,13 +54,48 @@ def Init(bus):
 
 def CLI(bus, parent):
 
+    def OnNoTestsFound(name):
+        click.secho('No tests found for {}'.format(name), fg='red')
+        click.secho('Exiting')
+        exit(1)
 
-    def PrintDiffHelp():
-        click.secho('')
+    def OnPythonCompiled(paths):
+        basenames = list(map(os.path.basename, paths))
+        click.secho('Python files moved to build folder [{}]'.format(', '.join(basenames)))
+
+    def OnCppCompiled(binary):
+        click.secho('Cpp compiled successfully and put in {}'.format(binary))
+
+    def OnCppFailed(compile_command):
+        click.secho('Could not compile using: "{}"'.format(compile_command), fg='red')
+        click.secho('Exiting')
+        exit(1)
+
+    def OnNoExecutable(name, type):
+        click.secho('Could not manage to find an executable for {}. Was looking for a {} file'.format(name, type), fg='red')
+        exit(1)
+
 
     @parent.command()
     @click.argument('name')
     def test(name):
+        '''Test your solution to a problem.
+
+        Once you have implemented a solution to a problem you can
+        automatically test it using this command. It will run against
+        all the different tests that are defined for the problem in
+        the tests folder and output a diff between your program output
+        and the answers.
+
+        When running the program it will use a timeout of ten seconds.
+
+        '''
+        bus.listen('kattcmd:test:no-tests', OnNoTest)
+        bus.listen('kattcmd:compile:python-compiled', OnPythonCompiled)
+        bus.listen('kattcmd:compile:cpp-compiled', OnCppCompiled)
+        bus.listen('kattcmd:compile:cpp-compile-failed', OnCppFailed)
+        bus.listen('kattcmd:run:no-executable', OnNoExecutable)
+
         # Compile name under most appropriate language
         root = bus.call('kattcmd:find-root', bus)
 

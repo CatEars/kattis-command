@@ -139,6 +139,16 @@ def CLI(bus, parent):
     @click.argument('value', type=str)
     @click.option('--user', default=False, type=bool, is_flag=True, help='Store value at user level')
     def setval(key, value, user):
+        '''Sets a value in the config.
+
+        Useful if you want to set your name or where your .kattisrc
+        file is. Also useful for interacting with commands such as
+        compile to customize your C++ compilation.
+
+        See `kattcmd tips` for useful configuration values and how to
+        set them.
+
+        '''
         def OnSuccess(key, value):
             if user:
                 click.echo('{}={} set in user config'.format(key, value))
@@ -156,6 +166,16 @@ def CLI(bus, parent):
     @click.argument('key', type=str)
     @click.option('--user', default=False, type=bool, is_flag=True, help='Load value at user level')
     def getval(key, user):
+        '''Prints value from the config.
+
+        Useful if you want to inspect values in your config such as
+        name or .kattisrc file.
+
+        If the user flag is set it will look inside your user config,
+        else it will try to find a config for the repo and print the
+        value if it can find it there.
+
+        '''
         if user:
             click.echo(bus.call('kattcmd:config:load-user', bus, key))
         else:

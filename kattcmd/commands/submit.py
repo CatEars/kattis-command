@@ -131,7 +131,7 @@ def CLI(bus, parent):
         click.secho('Successful submit!', fg='green', bold=True)
         click.echo('Kattis says: "{}"'.format(response.text))
 
-        pattern = r'\d+'
+        pattern = r'\d+' # Finds a number
         ids = re.findall(pattern, response.text)
         if not ids:
             return # Could not find submission ID
@@ -141,10 +141,20 @@ def CLI(bus, parent):
         problemurl = '{}/submissions/{}'.format(host, ids[0])
         click.launch(problemurl)
 
+
     @parent.command()
     @click.argument('name')
     @click.argument('language', default='python', type=click.Choice(['python', 'cpp']))
     def submit(name, language):
+        '''Submits a problem to kattis.
+
+        When you have implemented and tested a problem this command
+        will upload it to kattis and then open the submission in your
+        browser. The language defaults to python and you must specify
+        which language your solution uses. Currently only supporting
+        'python' and 'cpp' (as in C++).
+
+        '''
         bus.listen('kattcmd:submit:bad-login-response', OnBadLoginResponse)
         bus.listen('kattcmd:submit:bad-submit-response', OnBadSubmitResponse)
         bus.listen('kattcmd:submit:submitted', OnSubmitted)

@@ -72,6 +72,21 @@ def CLI(bus, parent):
     @click.option('--force', type=bool, default=False, is_flag=True, help='Open a problem even if it does not exist on kattis.')
     @click.argument('name')
     def open(name, force):
+        '''Opens a new problem.
+
+        Run this command when you want to start working on a solution
+        to a new problem.
+
+        Will create the folder `kattis/NAME` and put a template in
+        it. Will also download any sample input/output from kattis and
+        put into `tests/NAME`.
+
+        Normally the command checks against kattis that the problem
+        exists, but if you want to open one that does not exist you
+        will have to use the --force flag, which will only create the
+        folder and move the template there.
+
+        '''
         bus.listen('kattcmd:open:problem-opened', OnProblemOpen)
         bus.listen('kattcmd:testdownload:downloaded', OnTestsLoaded)
         bus.listen('kattcmd:testdownload:bad-status', OnTestFail)

@@ -144,6 +144,38 @@ def CLI(bus, parent):
 
     @click.command()
     def init():
+        '''Initializes a kattis repo.
+
+        Creates all necessary folders and files for you to maintain
+        your kattis solutions and utilize kattcmd. Should (preferably)
+        be done in a completely empty repo.
+
+        The command creates 5 folders: 'library', 'templates',
+        'kattis', 'tests', 'build'.
+
+        - library: Where you keep your code library, algorithms, and
+        solutions to general problems. For example you might have
+        'string.hpp' or 'graph.py' in here.
+
+        - templates: Contains templates for your code, which will be
+        automatically imported to a newly opened problem, depending
+        on your config.
+
+        - kattis: Contains your solutions to different problems. Put
+        all the files necessary to solve a problem inside here. For
+        example the problem carrots with a single python file would
+        be `kattis/carrots/carrots.py`.
+
+        - tests: Contains your tests and the sample test cases
+        downloaded from kattis. Tests are pairs where there is one
+        X.in and a corresponding X.ans, for example 'carrots.01.in'
+        and 'carrots.01.ans' create a test pair.
+
+        - build: Contains binaries and scripts that are run against
+        your tests. If you want to manually run something then look
+        for it in here.
+
+        '''
         bus.listen('kattcmd:init:directory-exists', OnDirectoryExists)
         bus.listen('kattcmd:init:directory-partial', OnDirectoryPartial)
         bus.listen('kattcmd:init:directory-created', OnDirectoryCreate)

@@ -31,6 +31,13 @@ def CLI(bus, parent):
 
     @parent.command()
     def clean():
+        '''Cleans the build folder.
+
+        Useful to do if your build folder is getting cluttered.
+
+        Roughly equivalent to `rm -rf build/*`.
+
+        '''
         items = bus.call('kattcmd:clean', bus)
         for item in items:
             path = os.path.relpath(item)
