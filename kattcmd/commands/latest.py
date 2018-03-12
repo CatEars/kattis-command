@@ -32,6 +32,10 @@ and the associated files.'''
 
     home = bus.call('kattcmd:find-root', bus)
     problempath = os.path.join(home, 'kattis', problemname)
+    if not os.path.exists(problempath):
+        bus.call('kattcmd:latest:no-files', problemname)
+        return None
+
     items = [os.path.join(problempath, item) for item in os.listdir(problempath)]
     with_date = [(os.path.getmtime(fpath), fpath) for fpath in items]
     latest_first = reversed(sorted(with_date))

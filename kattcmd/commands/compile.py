@@ -1,5 +1,6 @@
 import os
 import shutil
+import click
 
 
 def _GetBuildFolder(bus):
@@ -121,3 +122,52 @@ def Init(bus):
     bus.provide('kattcmd:compile:python', CompilePython)
     bus.provide('kattcmd:compile:cpp-command', FindCppCompileCommand)
 
+
+def CLI(bus, parent):
+
+    def OnCppCompiled(binary):
+        click.echo('Placed binary at {}'.format(binary))
+
+    def OnCppCompileFailed(compile_command):
+        click.secho('Could not compile with "{}"'.format(compile_command), fg='red')
+
+    def OnPythonCompiled(paths):
+        paths = list(map(os.path.relpath, paths))
+        click.echo('Copied to following paths {}'.format(paths))
+
+    def OnNoFiles(problemname):
+        click.secho('Could not find any "compilable" items for "{}"'.format(problemname), fg='red')
+        click.echo('Exiting')
+        exit(1)
+
+    @parent.command()
+    @click.argument('name')
+    def compile(name):
+        '''Compile your solution to a problem.
+
+        Will compile your solution and put it inside the build
+        folder. If you use an interpreted language then it will copy
+        it instead.
+
+        This command is useful if you want to run the code yourself
+        against some specific input.
+
+        '''
+        bus.listen('kattcmd:compile:cpp-compiled', OnCppCompiled)
+        bus.listen('kattcmd:compile:cpp-compile-failed', OnCppCompileFailed)
+        bus.listen('kattcmd:compile:python-compiled', OnPythonCompiled)
+        bus.listen('kattcmd:latest:no-files', OnNoFiles)
+
+        value = bus.call('kattcmd:latest', bus, name)
+        if not value:
+            click.secho('Could not determine what you worked on previously', fg='red')
+            click.echo('Exiting')
+            return None
+
+        type, _ = value
+        if type == 'python':
+            bus.call('kattcmd:compile:python', bus, name)
+        elif type == 'cpp':
+            bus.call('kattcmd:compile:cpp', bus, name)
+        else:
+            raise ValueError('{} is not an implemented type'.format(type))
