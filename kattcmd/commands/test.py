@@ -75,6 +75,10 @@ def CLI(bus, parent):
         click.secho('Could not manage to find an executable for {}. Was looking for a {} file'.format(name, type), fg='red')
         exit(1)
 
+    def OnNoFiles(problemname):
+        click.secho('Could not find any files for problem "{}"'.format(problemname), fg='red')
+        click.echo('Exiting')
+        exit(1)
 
     @parent.command()
     @click.argument('name')
@@ -95,6 +99,7 @@ def CLI(bus, parent):
         bus.listen('kattcmd:compile:cpp-compiled', OnCppCompiled)
         bus.listen('kattcmd:compile:cpp-compile-failed', OnCppFailed)
         bus.listen('kattcmd:run:no-executable', OnNoExecutable)
+        bus.listen('kattcmd:latest:no-files', OnNoFiles)
 
         # Compile name under most appropriate language
         root = bus.call('kattcmd:find-root', bus)
@@ -103,23 +108,18 @@ def CLI(bus, parent):
             click.secho('Could not find problem with name: {}'.format(name), fg='red')
             return
 
-        cpp_endings = ['.cpp', '.cxx', '.cc']
-        directory = os.path.join(root, 'kattis', name)
-        items = os.listdir(directory)
-        if '{}.py'.format(name) in items:
-            files = bus.call('kattcmd:compile:python', bus, name)
-            topic = 'kattcmd:run:python'
-            args = [name]
+        # TODO: below should use kattcmd:latest
+        language, _ = bus.call('kattcmd:latest', bus, name)
+        topic_mapping = {
+            'python': 'kattcmd:run:python',
+            'cpp': 'kattcmd:run:cpp'
+        }
 
-        elif any('{}{}'.format(name, ext) in items for ext in cpp_endings):
-            binary = bus.call('kattcmd:compile:cpp', bus, name)
-            binary = os.path.relpath(binary)
-            click.secho('Not implemented yet, but binary is compiled and at {}'.format(binary))
+        if not language in topic_mapping:
+            click.secho('Cannot run for language: {}'.format(language), fg='red')
             return
 
-        else:
-            click.secho('Could not find main program to be either C++ or Python')
-            return
+        topic = topic_mapping[language]
         items = [os.path.join(directory, item) for item in items]
 
         # Find all test files

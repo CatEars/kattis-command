@@ -100,6 +100,30 @@ def SubmitPythonProblem(bus, problemname):
     bus.call('kattcmd:submit:submitted', submit_response)
     return submit_response
 
+
+def SubmitCppProblem(bus, problemname):
+    '''Submits a cpp problem to kattis.'''
+
+    response = _Login(bus)
+    if response.status_code != 200:
+        bus.call('kattcmd:submit:bad-login-response', response)
+        return
+
+    extensions = ['.cc', '.cpp', '.cxx', '.h', '.hh', '.hpp', '.hxx']
+    files = _GetFilesWithExtensions(bus, problemname, extensions)
+    language = 'C++'
+    submiturl = _GetUserConfig(bus).get('kattis', 'submissionurl')
+    submit_response = _Submit(submiturl, response.cookies, language,
+                              problemname, files, problemname)
+
+    if submit_response.status_code != 200:
+        bus.call('kattcmd:submit:bad-submit-response', submit_response)
+        return
+
+    bus.call('kattcmd:submit:submitted', submit_response)
+    return submit_response
+
+
 def Init(bus):
 
     def OnBadLoginResponse(response):
@@ -115,6 +139,7 @@ def Init(bus):
     bus.provide('kattcmd:submit:bad-login-response', OnBadLoginResponse)
     bus.provide('kattcmd:submit:bad-submit-response', OnBadSubmitResponse)
     bus.provide('kattcmd:submit:submitted', OnSubmitted)
+    bus.provide('kattcmd:submit:cpp', SubmitCppProblem)
 
 
 def CLI(bus, parent):
@@ -141,25 +166,32 @@ def CLI(bus, parent):
         problemurl = '{}/submissions/{}'.format(host, ids[0])
         click.launch(problemurl)
 
+    def OnNoFiles(problemname):
+        click.secho('Could not find any files for "{}"!'.format(problemname), fg='red')
+        click.echo('Exiting')
+        exit(1)
 
     @parent.command()
     @click.argument('name')
-    @click.argument('language', default='python', type=click.Choice(['python', 'cpp']))
-    def submit(name, language):
+    def submit(name):
         '''Submits a problem to kattis.
 
         When you have implemented and tested a problem this command
         will upload it to kattis and then open the submission in your
-        browser. The language defaults to python and you must specify
-        which language your solution uses. Currently only supporting
-        'python' and 'cpp' (as in C++).
+        browser. It will look for the files you modified most recently
+        and use the language that is written in to determine what to
+        files to upload.
 
         '''
         bus.listen('kattcmd:submit:bad-login-response', OnBadLoginResponse)
         bus.listen('kattcmd:submit:bad-submit-response', OnBadSubmitResponse)
         bus.listen('kattcmd:submit:submitted', OnSubmitted)
+        bus.listen('kattcmd:latest:no-files', OnNoFiles)
 
+        language, _ = bus.call('kattcmd:latest', bus, name)
         if language == 'python':
             bus.call('kattcmd:submit:python', bus, name)
+        elif language == 'cpp':
+            bus.call('kattcmd:submit:cpp', bus, name)
         else:
             click.secho('Unsupported language!', fg='red')
