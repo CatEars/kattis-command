@@ -74,7 +74,8 @@ def CompileCpp(bus, problemname):
         return any(f.endswith(ending) for ending in endings)
 
     old_cwd = os.getcwd()
-    os.chdir(os.path.join(_GetBuildFolder(bus), problemname))
+    new_cwd = os.path.join(_GetBuildFolder(bus), problemname) 
+    os.chdir(new_cwd)
 
     output_binary = problemname
     input_files = ' '.join(filter(IsCppFile, files))
@@ -87,6 +88,9 @@ def CompileCpp(bus, problemname):
     for pattern, replacement in replacements:
         compile_command = compile_command.replace(pattern, replacement)
 
+    # If the binary exists already, recompile it
+    if os.path.exists(output_binary):
+        os.remove(output_binary)
     try:
         os.system(compile_command)
     except Exception as e:
@@ -104,7 +108,7 @@ def CompileCpp(bus, problemname):
         return relative_path
     else:
         os.chdir(old_cwd)
-        bus.call('kattcmd:compile:cpp-compile-failed', compile_command)
+        bus.call('kattcmd:compile:cpp-compile-failed', compile_command, new_cwd)
 
 
 def FindCppCompileCommand(bus):
@@ -139,8 +143,11 @@ def CLI(bus, parent):
     def OnCppCompiled(binary):
         click.echo('Placed binary at {}'.format(binary))
 
-    def OnCppCompileFailed(compile_command):
-        click.secho('Could not compile with "{}"'.format(compile_command), fg='red')
+    def OnCppCompileFailed(compile_command, directory):
+        directory = os.path.relpath(directory)
+        click.secho('Could not compile with "{}" in {}'.format(compile_command, directory), fg='red')
+        click.echo('Exiting')
+        exit(1)
 
     def OnPythonCompiled(paths):
         paths = list(map(os.path.relpath, paths))
