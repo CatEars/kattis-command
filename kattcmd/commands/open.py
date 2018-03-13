@@ -106,7 +106,7 @@ def CLI(bus, parent):
 
         elif preference == 'cpp':
             path = bus.call('kattcmd:template:cpp', bus, target)
-            bus.call('kattcmd:template:add-info', bus. path)
+            bus.call('kattcmd:template:add-info', bus, path)
 
         else:
             raise ValueError('Bad template preference, check "template-type" in your ' + \
