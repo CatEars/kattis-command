@@ -94,7 +94,7 @@ def CLI(bus, parent):
         When running the program it will use a timeout of ten seconds.
 
         '''
-        bus.listen('kattcmd:test:no-tests', OnNoTest)
+        bus.listen('kattcmd:test:no-tests', OnNoTestsFound)
         bus.listen('kattcmd:compile:python-compiled', OnPythonCompiled)
         bus.listen('kattcmd:compile:cpp-compiled', OnCppCompiled)
         bus.listen('kattcmd:compile:cpp-compile-failed', OnCppFailed)
@@ -109,18 +109,18 @@ def CLI(bus, parent):
             return
 
         # TODO: below should use kattcmd:latest
-        language, _ = bus.call('kattcmd:latest', bus, name)
+        language, items = bus.call('kattcmd:latest', bus, name)
         topic_mapping = {
-            'python': 'kattcmd:run:python',
-            'cpp': 'kattcmd:run:cpp'
+            'python': ('kattcmd:compile:python', 'kattcmd:run:python'),
+            'cpp': ('kattcmd:compile:cpp', 'kattcmd:run:cpp')
         }
 
         if not language in topic_mapping:
             click.secho('Cannot run for language: {}'.format(language), fg='red')
             return
 
-        topic = topic_mapping[language]
-        items = [os.path.join(directory, item) for item in items]
+        compile_topic, run_topic = topic_mapping[language]
+        args = [name]
 
         # Find all test files
         tests = list(sorted(bus.call('kattcmd:test', bus, name)))
@@ -128,7 +128,10 @@ def CLI(bus, parent):
         answers = [answer for _, answer in tests]
 
         # Run against all text files
-        outputs = bus.call(topic, bus, inputs, *args)
+        compiled = bus.call(compile_topic, bus, *args)
+        if not compiled:
+            return
+        outputs = bus.call(run_topic, bus, inputs, *args)
 
         first = True
         # Output the diffs between the text files

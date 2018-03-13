@@ -4,3 +4,4 @@ venv/*
 __pycache__/*
 dist/*
 __pycache__/
+MANIFEST
