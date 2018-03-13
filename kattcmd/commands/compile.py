@@ -89,12 +89,19 @@ def CompileCpp(bus, problemname):
 
     try:
         os.system(compile_command)
+    except Exception as e:
+        bus.call('kattcmd:compile:cpp-compile-failed', compile_command)
+        os.chdir(old_cwd)
+        return
+
+
+    if os.path.exists(output_binary):
         os.chdir(old_cwd)
         bus.call('kattcmd:compile:cpp-compiled', output_binary)
         return output_binary
-    except:
+    else:
+        os.chdir(old_cwd)
         bus.call('kattcmd:compile:cpp-compile-failed', compile_command)
-
 
 def FindCppCompileCommand(bus):
     '''Returns either the user-set compile command or the default one.'''
