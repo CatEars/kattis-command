@@ -94,14 +94,18 @@ def CompileCpp(bus, problemname):
         os.chdir(old_cwd)
         return
 
-
     if os.path.exists(output_binary):
         os.chdir(old_cwd)
+        # Remove unused files
+        for path in paths:
+            os.remove(path)
         bus.call('kattcmd:compile:cpp-compiled', output_binary)
-        return output_binary
+        relative_path = os.path.join('build', problemname, output_binary)
+        return relative_path
     else:
         os.chdir(old_cwd)
         bus.call('kattcmd:compile:cpp-compile-failed', compile_command)
+
 
 def FindCppCompileCommand(bus):
     '''Returns either the user-set compile command or the default one.'''
