@@ -18,9 +18,12 @@ Are you willing to support and use community created tools?
 
 ## Setup
 
-[Not yet fixed]
+To install `kattcmd` you need to have python 3.4, or greater,
+installed on your system as well as `pip3`. If you do not have `pip3`
+and run on a system with `apt-get` then you can install it with `sudo
+apt-get install python3-pip`.
 
-Install globally through pip and install as a script with setup.py
+To install `kattcmd` run `sudo -H pip3 install kattcmd`.
 
 
 ## Usage

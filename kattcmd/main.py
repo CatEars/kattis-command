@@ -55,6 +55,8 @@ def main():
             click.echo(e.message)
         else:
             click.echo(str(e))
+        with click.Context(cli_main) as ctx:
+            click.echo(cli_main.get_help(ctx))
     else:
         cli_main()
 
