@@ -66,8 +66,9 @@ def CLI(bus, parent):
     def OnCppCompiled(binary):
         click.secho('Cpp compiled successfully and put in {}'.format(binary))
 
-    def OnCppFailed(compile_command):
-        click.secho('Could not compile using: "{}"'.format(compile_command), fg='red')
+    def OnCppFailed(compile_command, directory):
+        directory = os.path.relpath(directory)
+        click.secho('Could not compile using: "{}" in {}'.format(compile_command, directory), fg='red')
         click.secho('Exiting')
         exit(1)
 

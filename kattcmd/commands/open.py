@@ -68,6 +68,14 @@ def CLI(bus, parent):
         relative = os.path.relpath(path)
         click.echo('Updated {} with information (date etc.)'.format(relative))
 
+    def OnTemplateAdded(folder, path):
+        if not path:
+            folder = os.path.relpath(folder)
+            click.secho('File already exists in {}'.format(folder))
+            click.secho('Did not overwrite it...')
+        else:
+            click.secho('Added {}'.format(path))
+        
     @click.command()
     @click.option('--force', type=bool, default=False, is_flag=True, help='Open a problem even if it does not exist on kattis.')
     @click.argument('name')
@@ -91,6 +99,9 @@ def CLI(bus, parent):
         bus.listen('kattcmd:testdownload:downloaded', OnTestsLoaded)
         bus.listen('kattcmd:testdownload:bad-status', OnTestFail)
         bus.listen('kattcmd:open:problem-doesnt-exist', OnProblemDoesntExist)
+        bus.listen('kattcmd:template:python-added', OnTemplateAdded)
+        bus.listen('kattcmd:template:cpp-added', OnTemplateAdded)
+
         if force:
             os.environ['FORCE_OPEN'] = '1'
 
@@ -102,11 +113,13 @@ def CLI(bus, parent):
 
         if preference == 'python':
             path = bus.call('kattcmd:template:python', bus, target)
-            bus.call('kattcmd:template:add-info', bus, path)
+            if path:
+                bus.call('kattcmd:template:add-info', bus, path)
 
         elif preference == 'cpp':
             path = bus.call('kattcmd:template:cpp', bus, target)
-            bus.call('kattcmd:template:add-info', bus. path)
+            if path:
+                bus.call('kattcmd:template:add-info', bus, path)
 
         else:
             raise ValueError('Bad template preference, check "template-type" in your ' + \

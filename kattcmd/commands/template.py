@@ -19,8 +19,11 @@ def _AddTemplate(templatename, extname, folder):
     template = os.path.join(_GetTemplateFolder(), templatename)
     problemname = os.path.basename(folder) + extname
     templatepath = os.path.join(folder, problemname)
-    shutil.copyfile(template, templatepath)
-    return templatepath
+    if not os.path.exists(templatepath):
+        shutil.copyfile(template, templatepath)
+        return templatepath
+    else:
+        return None
 
 
 def _ReplaceInFile(fpath, pattern, value):
@@ -76,7 +79,7 @@ def AddGeneralizedTemplate(bus, topic, folder, default, defaultname, fileending)
         path = HandleDefault()
     else:
         path = HandleCustom()
-
+    
     bus.call(topic, folder, path)
     return path
 

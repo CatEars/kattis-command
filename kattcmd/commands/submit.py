@@ -10,7 +10,9 @@ HEADERS = {
 }
 
 class LoginError(Exception):
-    pass
+
+    def __init__(self, message):
+        self.message = message
 
 
 def _GetFilesWithExtensions(bus, problemname, exts):
@@ -28,7 +30,7 @@ def _GetFilesWithExtensions(bus, problemname, exts):
 def _GetUserConfig(bus):
     configfile = bus.call('kattcmd:config:load-user', bus, 'kattisrc')
     if not configfile or not os.path.isfile(configfile):
-        raise LoginError('No .kattisrc file present')
+        raise LoginError('No .kattisrc file present. Make sure to download it')
     config = configparser.ConfigParser()
     config.read(configfile)
     return config
