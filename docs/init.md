@@ -18,8 +18,8 @@ folder (or subfolder) of a kattis directory.
 
 You can compare this command to `git init`, which initializes the
 current directory as a git directory and only once you have done this
-can you use other git commands, such as `git add` or `git
-log`. `kattcmd init` is similar in that it is the first command you
+can you use other git commands, such as `git add` or `git log`. 
+`kattcmd init` is similar in that it is the first command you
 run in order to use `kattcmd` effectively.
 
 By running `kattcmd init` you will also create 5 folder, `library`,
