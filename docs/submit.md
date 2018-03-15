@@ -25,5 +25,5 @@ and into the `help` tab, then click on the `How to submit` link. In
 here you will have a link `Download your personal configuration
 file`. Click on that and download the file as `~/.kattisrc`. The file
 includes a *personal* access token, which means you should make sure
-only you can read/write to it. This can be done with `chmod 600
-~/.kattisrc` on most UNIX-like systems.
+only you can read/write to it. This can be done with `chmod 600 ~/.kattisrc` 
+on most UNIX-like systems.
