@@ -18,16 +18,26 @@ Are you willing to support and use community created tools?
 
 ## Setup
 
-[Not yet fixed]
+Install through the use of pip. However you need to install it through
+pip3, which may not be installed on your computer. If you have apt-get
+installed you can run
 
-Install globally through pip and install as a script with setup.py
+```
+$ sudo apt-get install python3-pip
+```
 
+After that you can install it with
+
+```
+$ sudo -H pip3 install kattcmd
+```
+
+Or you can use `virtualenv`, but then you will need it whenever you
+want to use `kattcmd`.
 
 ## Usage
 
-[Not yet fixed]
-
-See instructions on commands inside [docs](docs)
+See instructions on commands inside [docs](docs/index.md)
 
 ## Contributing
 
