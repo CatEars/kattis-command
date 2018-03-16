@@ -39,6 +39,19 @@ def main():
 
     core.TouchStructure()
     plugins = core.ListPlugins()
+
+    def ConvertPlugins(plugin):
+        if not isinstance(plugin, str):
+            return plugin
+        path = plugin
+        type, value = core.ImportExternal(path)
+        if type == 'success':
+            return value
+
+    plugins = map(ConvertPlugins, plugins)
+    plugins = filter(lambda x: x is not None, plugins)
+    plugins = list(plugins)
+
     for plugin in plugins:
         if hasattr(plugin, 'Init'):
             plugin.Init(the_bus)

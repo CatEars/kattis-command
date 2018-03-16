@@ -4,18 +4,7 @@ import importlib.util
 import pydash
 import ast
 
-def _ToPlugin(path):
-    '''Checks that path is a plugin.'''
-    name, extension = os.path.splitext(path)
-    if extension != '.py':
-        return ('extension', None)
-    try:
-        spec = importlib.util.spec_from_file_location(name, path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        return ('success', module)
-    except ImportError as e:
-        return ('error', e)
+from kattcmd import core
 
 
 def _AddPluginInConfig(bus, path):
@@ -25,11 +14,11 @@ def _AddPluginInConfig(bus, path):
     plugins.append(path)
     plugins = list(set(plugins))
     bus.call('kattcmd:config:add-user', bus, 'plugins', str(plugins))
-    
+
 
 def AddPlugin(bus, path):
     '''Checks the plugin at path and adds it to user config.'''
-    type, value = _ToPlugin(path)
+    type, value = core.ImportExternal(path)
 
 
     def IsBadExtension():
@@ -37,7 +26,7 @@ def AddPlugin(bus, path):
 
     def HandleBadExtension():
         bus.call('kattcmd:plugin:bad-extension', path)
-    
+
 
     def IsImportError():
         return type == 'error'
@@ -91,9 +80,9 @@ def RemovePlugin(bus, pattern, match_path=False):
 
 
 def ListPlugins(bus):
-    '''Returns a list of all the plugins, as returned by _ToPlugin.'''
+    '''Returns a list of all the plugins, as returned by ImportExternal.'''
     plugins = ast.literal_eval(bus.call('kattcmd:config:load-user', bus, 'plugins'))
-    values = list(map(_ToPlugin, plugins))
+    values = list(map(core.ImportExternal, plugins))
     bus.call('kattcmd:plugin:plugins-listed', values)
     return values
 
@@ -128,4 +117,96 @@ def Init(bus):
 
 
 def CLI(bus, parent):
-    pass
+
+    def _ToPluginName(path):
+        basename = os.path.basename(path)
+        name, ext = os.path.splitext(basename)
+        return name
+
+    def OnBadExtension(path):
+        click.secho('plugin {} has a bad extension, skipping'.format(path), fg='red')
+        click.secho('To make this go away, please remove the plugin with:', fg='red')
+
+        remove_command = 'kattcmd plugin --remove {}'.format(path)
+        click.echo('   {}'.format(remove_command))
+
+    def OnImportError(path, error):
+        click.secho('plugin {} could not be imported, skipping'.format(path), fg='red')
+        click.echo('Error text:')
+        click.echo(str(error))
+
+    def OnPluginLoaded(path):
+        name = _ToPluginName(path)
+        click.echo('plugin {} added'.format(name))
+
+    def OnPluginsUpdated(new_plugins, removed_plugins):
+        click.echo('Removed:')
+        for path in removed_plugins:
+            name = _ToPluginName(path)
+            click.echo('   - {}'.format(name))
+
+        click.echo('Plugins still active: ')
+        for path in new_plugins:
+            name = _ToPluginName(path)
+            click.echo('   - {}'.format(name))
+
+    def OnPluginsListed(plugins):
+        if not plugins:
+            click.echo('No plugins installed')
+            return
+
+        click.echo('Plugins:')
+        for type, value in plugins:
+            if type == 'success':
+                path = value.__name__
+                name = _ToPluginName(path)
+                click.echo('   - {}@{}'.format(name, path + '.py'))
+            elif type == 'extension':
+                path, extension = value
+                click.secho('   - {} (Error: bad extension: {})'.format(path, extension), fg='red')
+            elif type == 'error':
+                path, error = value
+                click.secho('   - {} (Error: import error)'.format(path), fg='red')
+                if os.getenv('DETAILED_ERROR'):
+                    click.secho('        {}'.format(str(error)), fg='red')
+
+
+    @parent.command()
+    @click.option('--add', type=str, help='Add plugin so that it is loaded into kattcmd.', default=None)
+    @click.option('--remove', type=str, help='Remove any plugin that matches the string after --remove.', default=None)
+    @click.option('--match-path', is_flag=True, help='Used with --remove to indicate that the pattern should match against the full path of the plugin.', default=False)
+    @click.option('--list', is_flag=True, help='Lists the different plugins that are loaded.', default=False)
+    @click.option('--detailed-error', is_flag=True, help='Displays details of any import errors')
+    def plugin(add, remove, match_path, list, detailed_error):
+        '''Add/Remove/List plugins.
+
+        Use either the `--add STR` to add a plugin, or the `--remove
+        STR` to remove a plugin matching STR or `--list` to list
+        installed plugins.
+
+        --match-path is used with --remove and will make the pattern
+        match the whole path, and just not the filename.
+
+        --detailed-error is used with --list and will print a detailed
+          import error for any plugin that was not imported correctly.
+
+        '''
+        bus.listen('kattcmd:plugin:bad-extension', OnBadExtension)
+        bus.listen('kattcmd:plugin:import-error', OnImportError)
+        bus.listen('kattcmd:plugin:plugin-loaded', OnPluginLoaded)
+        bus.listen('kattcmd:plugin:plugins-updated', OnPluginsUpdated)
+        bus.listen('kattcmd:plugin:plugins-listed', OnPluginsListed)
+
+        if detailed_error:
+            os.environ['DETAILED_ERROR'] = '1'
+
+        if add:
+            add = os.path.abspath(add)
+            bus.call('kattcmd:plugin:add', bus, add)
+        elif remove:
+            bus.call('kattcmd:plugin:remove', bus, remove, match_path=match_path)
+        elif list:
+            bus.call('kattcmd:plugin:list', bus)
+        else:
+            with click.Context(plugin) as ctx:
+                click.echo(plugin.get_help(ctx))

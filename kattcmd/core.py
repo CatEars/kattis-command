@@ -1,12 +1,29 @@
 import ast
 import os
 import configparser
+import importlib
 
 from kattcmd import commands
 
 
 class CredentialsException(Exception):
     '''An exception type for missing credentials.'''
+
+
+def ImportExternal(path):
+    '''Checks that path is a plugin.'''
+    name, extension = os.path.splitext(path)
+    if extension != '.py':
+        return ('extension', (path, extension))
+    try:
+        spec = importlib.util.spec_from_file_location(name, path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return ('success', module)
+    except ImportError as e:
+        return ('error', (path, e))
+    except OSError as e:
+        return ('error', (path, e))
 
 
 def TouchStructure():
