@@ -44,7 +44,7 @@ can, without problem use configuration items from `.kattcmd` and
 files. Let's try adding a value of no particular use and see what
 happens.
 
-```
+```bash
 [~/kattis] $ kattcmd setval dude "where is my car"
 [~/kattis] $ kattcmd setval --user dude "not here!"
 ```
@@ -65,7 +65,7 @@ template. The value we want to change is the user-defined
 `template-type` and the user-defined `cppcompile`. In order to change the
 C++ compilation command we run
 
-```
+```bash
 [~/kattis] $ kattcmd setval --user cppcompile "g++ -O2 FILES -o BINARY"
 ```
 
@@ -75,7 +75,7 @@ with the input source files and the output binary, respectively.
 Now we just need to default to a C++ template. To do this run the
 following command.
 
-```
+```bash
 [~/kattis] $ kattcmd setval --user template-type "cpp"
 ```
 

@@ -50,7 +50,7 @@ def CLI(bus, parent):
 Now that we have our plugin, lets try and add it to the plugin path
 and see if it is automatically imported or not.
 
-```
+```bash
 [~/plugin] $ kattcmd setval --user plugins "[$(pwd/plugin.py)]"
 ```
 

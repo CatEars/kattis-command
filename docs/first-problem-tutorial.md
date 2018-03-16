@@ -30,7 +30,7 @@ want to continue with the actual tutorial!
 First you want to create a completely new folder where you will be
 storing all your solutions.
 
-```
+```bash
 [~] $ mkdir kattis
 [~] $ cd kattis
 [~/kattis] $ kattcmd init
@@ -87,7 +87,7 @@ Next up we are gonna solve an actual problem.
 
 Start up by opening the problem using `kattcmd open`
 
-```
+```bash
 [~/kattis] $ kattcmd open carrots
 Opened carrots for solving
 Tests put inside of tests/carrots
@@ -102,7 +102,7 @@ created the folder in `kattis`, put the python template there and
 named it `carrots.py`. Lets try out testing it right now, without any
 implementation!
 
-```
+```bash
 [~/kattis] $ kattcmd test carrots
 Python files moved to build folder [carrots.py]
 0: tests/carrots/carrots.01.in
@@ -137,7 +137,7 @@ Hint: It can easily be solved with 1-2 lines
 
 Once you are done implementing the solution we should test it again.
 
-```
+```bash
 [~/kattis] $ kattcmd test carrots
 Python files moved to build folder [carrots.py]
 0: tests/carrots/carrots.01.in
@@ -152,7 +152,7 @@ kattis. This is easily done with `kattcmd submit`. Beware that it will
 automatically open a page to your solution (or the login page for
 kattis), so don't get startled by that.
 
-```
+```bash
 [~/kattis] $ kattcmd submit carrots
 Successful submit!
 Kattis says: "Submission received. Submission ID: 2658098."
