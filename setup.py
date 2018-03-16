@@ -20,7 +20,7 @@ setup(
     download_url='https://git.lysator.liu.se/catears/kattis-command/repository/0.0.4/archive.tar.gz',
     keywords=['kattis', 'cli', 'competitive programming'],
     install_requires=['requests', 'click', 'pydash'],
-    python_requires='>=3.4',
+    python_requires='>=3.5',
     scripts=['bin/kattcmd'],
     package_dir={
         'kattcmd.commands': 'kattcmd/commands'
