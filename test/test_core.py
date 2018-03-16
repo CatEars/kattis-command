@@ -7,7 +7,7 @@ from .util import WithCustomHome
 
 
 @WithCustomHome
-def test_creates_kattcmd_options():
+def test_CreatesKattcmdOptions():
     assert core.TouchStructure()
 
     kattcmd_path = os.path.expanduser('~/.kattcmd')
@@ -22,13 +22,13 @@ def test_creates_kattcmd_options():
 
 
 @WithCustomHome
-def test_touch_twice():
+def test_TouchTwice():
     assert core.TouchStructure()
     assert not core.TouchStructure()
 
 
 @WithCustomHome
-def test_lists_plugins():
+def test_ListsPlugins():
     assert core.TouchStructure()
     plugins = core.ListPlugins()
     assert isinstance(plugins, list)

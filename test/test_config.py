@@ -1,12 +1,10 @@
 import os
 from random import randint
 
-from .util import WithCustomCWD, WithModules, CallChecker
-from kattcmd import bus as busmodule
-from kattcmd.commands import init, root, config
+from .util import WithCustomCWD, WithMostModules, CallChecker
 
 @WithCustomCWD
-@WithModules([root, config])
+@WithMostModules
 def test_AddToUserConfig(bus):
     home = os.environ['HOME']
 
@@ -26,7 +24,7 @@ def test_AddToUserConfig(bus):
 
 
 @WithCustomCWD
-@WithModules([init, root, config])
+@WithMostModules
 def test_AddToRepoConfig(bus):
     home = os.environ['HOME']
 
@@ -48,4 +46,3 @@ def test_AddToRepoConfig(bus):
 
     bus.call('kattcmd:config:load-repo', bus, str(randint(0, 10000)))
     assert checker_fail.yay
-
