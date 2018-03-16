@@ -127,8 +127,44 @@ def CLI(bus, parent):
     @click.argument('libfile')
     @click.argument('problem')
     def libcp(libfile, problem):
+        '''my docstring'''
         pass
 ```
 
-Now we have created the command `kattcmd libcp LIBFILE PROBLEM`. Both passed as
-strings to the `libcp` function.
+Now we have created the command `kattcmd libcp LIBFILE PROBLEM`. Both
+passed as strings to the `libcp` function. Click will automatically
+add the command as a visible subcommand when running `kattcmd` and
+running `kattcmd libcp --help` will display the help message for it,
+which is the docstring for the function.
+
+If we combine our implementation with the code above we will have
+finished our plugin! The final plugin looks like this:
+
+```python
+import click
+import os
+import shutil
+
+def CLI(bus, parent):
+
+    @parent.command()
+    @click.argument('libfile')
+    @click.argument('problem')
+    def libcp(libfile, problem):
+        '''Copies a library file to a problem folder'''
+        try:
+            home = bus.call('kattcmd:find-root', bus)
+        except Exception as e:
+            print('User is not in a kattis directory', e)
+            exit(1)
+
+        src = os.path.join(home, 'library', libfile)
+        dst = os.path.join(home, 'kattis', problem, libfile)
+        shutil.copyfile(src, dst)
+```
+
+That is all that you should need to get started with plugin
+development for `kattcmd`! If you need inspiration on how to create
+more advanced plugins then I recommend you to look at the
+[source](kattcmd/commands), because each command that `kattcmd` comes
+with is essentially a plugin.
