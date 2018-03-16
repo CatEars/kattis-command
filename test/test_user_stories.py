@@ -75,3 +75,5 @@ def test_OpenNewProblem(bus):
     do_replace = lambda: bus.call('kattcmd:template:add-info', bus, path)
     ExecuteRPC(do_replace, 'kattcmd:template:file-info-added')
     assert FileContains(path, name)
+
+

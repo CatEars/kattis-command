@@ -102,3 +102,13 @@ def ExecuteInOrder(bus, calls):
         bus.listen(answertopic, checker)
         result = bus.call(topic, bus, *arguments, **kwargs)
         yield result, checker
+
+
+def ExpectFileSystem(calls, rootpath):
+    for call in calls:
+        call()
+        retfiles = []
+        for root, dirs, files in os.walk(rootpath):
+            retfiles.extend([os.path.join(root, d) for d in dirs])
+            retfiles.extend([os.path.join(root, f) for f in files])
+        yield set(retfiles)
