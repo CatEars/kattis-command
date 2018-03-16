@@ -74,6 +74,7 @@ def CLI(bus, parent):
             click.secho('File already exists in {}'.format(folder))
             click.secho('Did not overwrite it...')
         else:
+            path = os.path.relpath(path)
             click.secho('Added {}'.format(path))
         
     @click.command()

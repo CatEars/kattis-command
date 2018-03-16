@@ -11,7 +11,7 @@ def test_latest(bus):
     calls = [
         ('kattcmd:init', 'kattcmd:init:directory-created'),
         ('kattcmd:open', 'kattcmd:open:problem-opened', [problemname]),
-        ('kattcmd:template:python', 'kattcmd:template:python-added', [problemfolder])
+        ('kattcmd:template:python', 'kattcmd:template:python-added', [problemfolder], {'default': True})
     ]
 
     assert all(checker.yay for _, checker in ExecuteInOrder(bus, calls))

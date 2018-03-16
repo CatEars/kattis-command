@@ -46,19 +46,13 @@ def main():
         if hasattr(plugin, 'CLI'):
             plugin.CLI(the_bus, cli_main)
 
-
     try:
-        home = the_bus.call('kattcmd:find-root', the_bus)
-    except Exception as e:
-        click.echo('It seems that you are not in a kattis directory =/')
-        if hasattr(e, 'message'):
-            click.echo(e.message)
-        else:
-            click.echo(str(e))
-        with click.Context(cli_main) as ctx:
-            click.echo(cli_main.get_help(ctx))
-    else:
         cli_main()
+    except Exception as e:
+        if hasattr(e, 'message'):
+            print(e.message)
+        else:
+            print(e)
 
 
 if __name__ == '__main__':

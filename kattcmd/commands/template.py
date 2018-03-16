@@ -14,14 +14,14 @@ def _GetTemplateFolder():
     return path
 
 
-def _AddTemplate(templatename, extname, folder):
+def _AddTemplate(templatepath, folder):
     '''Adds the designamed template to the folder with the extension.'''
-    template = os.path.join(_GetTemplateFolder(), templatename)
+    extname = os.path.splitext(templatepath)[1]
     problemname = os.path.basename(folder) + extname
-    templatepath = os.path.join(folder, problemname)
-    if not os.path.exists(templatepath):
-        shutil.copyfile(template, templatepath)
-        return templatepath
+    outputpath = os.path.join(folder, problemname)
+    if not os.path.exists(outputpath):
+        shutil.copyfile(templatepath, outputpath)
+        return outputpath
     else:
         return None
 
@@ -63,14 +63,17 @@ def _HandleCustomTemplate(bus, fileend, folder):
         msg = 'Could not find any templates in {} with "{}" ending'
         raise TemplateError(msg.format(kattcmd_templates, fileend))
 
-    return _AddTemplate(remaining[0], fileend, folder)
+    path = os.path.join(kattcmd_templates, remaining[0])
+    return _AddTemplate(path, folder)
 
 
-def AddGeneralizedTemplate(bus, topic, folder, default, defaultname, fileending):
+def AddGeneralizedTemplate(bus, topic, folder, fileending, default, defaultname):
     '''Generalized handler for adding templates'''
 
     def HandleDefault():
-        return _AddTemplate(defaultname, fileending, folder)
+        templatefolder = _GetTemplateFolder()
+        defaultpath = os.path.join(templatefolder, defaultname)
+        return _AddTemplate(defaultpath, folder)
 
     def HandleCustom():
         return _HandleCustomTemplate(bus, fileending, folder)
@@ -84,7 +87,7 @@ def AddGeneralizedTemplate(bus, topic, folder, default, defaultname, fileending)
     return path
 
 
-def AddPython3Template(bus, folder, default=True):
+def AddPython3Template(bus, folder, default=False):
     '''Adds a python3 template to a problem folder.'''
     return AddGeneralizedTemplate(
         bus=bus,
@@ -96,7 +99,7 @@ def AddPython3Template(bus, folder, default=True):
     )
 
 
-def AddCppTemplate(bus, folder, default=True):
+def AddCppTemplate(bus, folder, default=False):
     '''Adds the default c++ template.'''
     return AddGeneralizedTemplate(
         bus=bus,

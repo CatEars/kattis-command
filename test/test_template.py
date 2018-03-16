@@ -6,7 +6,7 @@ from kattcmd import bus as busmodule
 from kattcmd.commands import init, template
 
 
-def DoTemplateTestWithType(topic, listen_topic, use_home=False):
+def DoTemplateTestWithType(topic, listen_topic, use_home=False, kwargs={}):
     assert core.TouchStructure()
     checker = CallChecker()
 
@@ -28,7 +28,7 @@ def DoTemplateTestWithType(topic, listen_topic, use_home=False):
         target = os.path.join(home, 'kattis', 'hello')
         os.mkdir(target)
 
-    bus.call(topic, bus, target)
+    bus.call(topic, bus, target, **kwargs)
     assert checker.yay
     assert os.listdir(target)
 
@@ -37,12 +37,13 @@ def DoTemplateTestWithType(topic, listen_topic, use_home=False):
 @WithCustomHome
 def test_cpp_template():
     DoTemplateTestWithType('kattcmd:template:cpp',
-                           'kattcmd:template:cpp-added')
+                           'kattcmd:template:cpp-added',
+                           kwargs={'default': True})
 @WithCustomHome
 def test_py_template():
     DoTemplateTestWithType('kattcmd:template:python',
-                           'kattcmd:template:python-added')
-
+                           'kattcmd:template:python-added',
+                           kwargs={'default': True})
 @WithCustomHome
 def test_AllDefaultTemplate():
     DoTemplateTestWithType('kattcmd:template:default',

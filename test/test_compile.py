@@ -11,7 +11,7 @@ def test_CompilePython(bus):
     calls = [
         ('kattcmd:init', 'kattcmd:init:directory-created'),
         ('kattcmd:open', 'kattcmd:open:problem-opened', [problemname]),
-        ('kattcmd:template:python', 'kattcmd:template:python-added', [target_template]),
+        ('kattcmd:template:python', 'kattcmd:template:python-added', [target_template], {'default': True}),
         ('kattcmd:compile:python', 'kattcmd:compile:python-compiled', [problemname])
     ]
 
@@ -28,7 +28,7 @@ def test_CompileCpp(bus):
     calls = [
         ('kattcmd:init', 'kattcmd:init:directory-created'),
         ('kattcmd:open', 'kattcmd:open:problem-opened', [problemname]),
-        ('kattcmd:template:cpp', 'kattcmd:template:cpp-added', [target_template]),
+        ('kattcmd:template:cpp', 'kattcmd:template:cpp-added', [target_template], {'default': True}),
         ('kattcmd:compile:cpp', 'kattcmd:compile:cpp-compiled', [problemname])
     ]
 

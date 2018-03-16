@@ -69,7 +69,7 @@ def test_OpenNewProblem(bus):
     assert ExistsFromRoot('tests/carrots')
 
     # Add a python template and replace with info
-    do_template = lambda: bus.call('kattcmd:template:python', bus, FromRoot('kattis/carrots'))
+    do_template = lambda: bus.call('kattcmd:template:python', bus, FromRoot('kattis/carrots'), default=True)
     path = ExecuteRPC(do_template, 'kattcmd:template:python-added')
     assert ExistsFromRoot('kattis/carrots/carrots.py')
     do_replace = lambda: bus.call('kattcmd:template:add-info', bus, path)
