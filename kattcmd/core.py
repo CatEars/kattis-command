@@ -40,7 +40,7 @@ def _ListBuiltins():
     return [commands.init, commands.template, commands.open, commands.root,
             commands.test_download, commands.config, commands.compile,
             commands.test, commands.run, commands.submit, commands.clean,
-            commands.tips, commands.latest]
+            commands.tips, commands.latest, commands.plugin]
 
 
 def _ListExternals():

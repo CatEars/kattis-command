@@ -40,7 +40,8 @@ def main():
     core.TouchStructure()
     plugins = core.ListPlugins()
     for plugin in plugins:
-        plugin.Init(the_bus)
+        if hasattr(plugin, 'Init'):
+            plugin.Init(the_bus)
 
     for plugin in plugins:
         if hasattr(plugin, 'CLI'):
