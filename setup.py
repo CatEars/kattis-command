@@ -12,15 +12,15 @@ from distutils.core import setup
 setup(
     name='kattcmd',
     packages=['kattcmd', 'kattcmd.commands'],
-    version='0.0.5',
+    version='0.0.7',
     description='Kattis solution management CLI written in python',
     author='Henrik Adolfsson',
     author_email='anting004@gmail.com',
     url='https://git.lysator.liu.se/catears/kattis-command',
-    download_url='https://git.lysator.liu.se/catears/kattis-command/repository/0.0.4/archive.tar.gz',
+    download_url='https://git.lysator.liu.se/catears/kattis-command/repository/0.0.7/archive.tar.gz',
     keywords=['kattis', 'cli', 'competitive programming'],
     install_requires=['requests', 'click', 'pydash'],
-    python_requires='>=3.5',
+    python_requires='>=3.4',
     scripts=['bin/kattcmd'],
     package_dir={
         'kattcmd.commands': 'kattcmd/commands'
