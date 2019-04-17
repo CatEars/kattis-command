@@ -1,6 +1,6 @@
 ![tested with docker and pytest](https://img.shields.io/badge/tested%20with-docker%20%7C%20pytest-blue.svg)
-![build status](https://travis-ci.org/CatEars/kattis-command#)
-![Say Thanks](https://saythanks.io/to/CatEars)
+![build status](https://travis-ci.org/CatEars/kattis-command.svg?branch=master)
+[![saythanks](https://img.shields.io/badge/say-thanks-ffa500.svg?style=for-the-badge)](https://saythanks.io/to/CatEars)
 
 # Kattis-Command
 
