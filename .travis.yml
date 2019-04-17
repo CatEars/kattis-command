@@ -7,10 +7,10 @@ stages:
 addons:
   apt:
     packages:
-      - gcc-7.3
-      - g++-7.3
+      - gcc
+      - g++
 jobs:
   include:
     - stage: test
       name: Run local tests
-      script: apt-get update -y && apt-get install -y g++ && make init && make install && make test
+      script: make init && make install && make test
