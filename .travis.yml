@@ -8,4 +8,4 @@ jobs:
   include:
     - stage: test
       name: Run local tests
-      script: make init && make test
+      script: make init && make install && make test
