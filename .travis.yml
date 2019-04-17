@@ -3,13 +3,9 @@ python:
   - '3.6'
 install: pip install pipenv
 stages:
-  - init
   - test
 jobs:
   include:
-    - stage: compile
-      name: Initialization/Installation
-      script: make init
     - stage: test
       name: Run local tests
-      script: make test
+      script: make init && make test
