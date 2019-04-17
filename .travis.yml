@@ -9,9 +9,10 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-7
+      - gcc-8
+      - g++-8
 jobs:
   include:
     - stage: test
       name: Run local tests
-      script: make init && make install && make test
+      script: g++ --version && make init && make install && make test
