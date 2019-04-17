@@ -45,3 +45,7 @@ types of validation or have some Domain Specific Language where you
 describe the validation. An example of a standard validation would be
 `set`, the order of the items are not relevant, or `set-lines`, each
 line in the output has to match by set equality.
+
+Most importantly for complex testing logic is that it should be possible for
+pull requests to add solutions to new problems so they appear automatically into
+the tool.

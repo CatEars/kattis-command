@@ -33,11 +33,22 @@ $ sudo apt-get install python3-pip
 After that you can install it with
 
 ```
-$ sudo -H pip3 install kattcmd
+pip3 install --user kattcmd
 ```
 
 Or you can use `virtualenv`, but then you will need it whenever you
 want to use `kattcmd`.
+
+## Help I get "Command not found!"
+
+If you have not configured to install with the `--user` flag before you might
+need to add `~/local/.bin` to your path. The easiest way to do this is to append
+
+```
+export PATH=$PATH:~/.local/bin
+```
+
+to your `.bashrc` or `.zshrc` (if you are using bash/zsh respectively).
 
 ## Usage
 
@@ -46,7 +57,3 @@ See instructions on commands inside [docs](docs/index.md)
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
-
-
-## Credits
-
