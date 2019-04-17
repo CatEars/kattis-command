@@ -1,11 +1,16 @@
 language: python
 python:
   - '3.6'
-install: pip install pipenv && apt-get install -y g++
+install: pip install pipenv
 stages:
   - test
+addons:
+  apt:
+    packages:
+      - gcc-7.3
+      - g++-7.3
 jobs:
   include:
     - stage: test
       name: Run local tests
-      script: make init && make install && make test
+      script: apt-get update -y && apt-get install -y g++ && make init && make install && make test
