@@ -8,7 +8,6 @@ install:
 	. ./venv/bin/activate; \
 	pip install --upgrade .; \
 
-
 test:
 	. ./venv/bin/activate; \
 	pytest test -m "not submission"; \
@@ -20,3 +19,10 @@ testall:
 
 
 .PHONY: init install test testall
+
+dockerbuild:
+	docker build . -t kattis-cmd-testimage
+
+dockertest:
+	make dockerbuild
+	docker run "kattis-cmd-testimage"

@@ -4,14 +4,8 @@ python:
 install: pip install pipenv
 stages:
   - test
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-7
 jobs:
   include:
     - stage: test
       name: Run local tests
-      script: apt-get install -y g++-7 && g++ --version && make init && make install && make test
+      script: make dockertest
