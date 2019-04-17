@@ -1,7 +1,0 @@
-image: whatisevenpineapple/python3-virtualmake:1.0.0
-
-testrunner:
-  script:
-    - make init
-    - make install
-    - make testall
