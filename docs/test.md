@@ -14,7 +14,7 @@ $ kattcmd test funnygames
 ## Effect
 
 The `test` command is used to test your solution to a problem. It will
-automatically [compile](docs/compile.md) your solution, and then run it against the
+automatically [compile](compile.md) your solution, and then run it against the
 tests it can find in the `tests` folder. If you have multiple
 solutions it will look at the files that were modified most recently
 and try to figure out what language you want to run it in.

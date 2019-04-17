@@ -7,26 +7,26 @@ focus on helping with a specific issue, similar to an F.A.Q.
 
 ## Tutorial
 
-* [Submit your first problem](docs/first-problem-tutorial.md)
+* [Submit your first problem](first-problem-tutorial.md)
 
-* [Configure kattcmd with user values](docs/configure-kattcmd.md)
+* [Configure kattcmd with user values](configure-kattcmd.md)
 
-* [Writing a plugin for kattcmd](docs/writing-a-plugin.md)
+* [Writing a plugin for kattcmd](writing-a-plugin.md)
 
 ## Manuals
 
-* [tips](docs/tips.md)
+* [tips](tips.md)
 
-* [init](docs/init.md)
+* [init](init.md)
 
-* [open](docs/open.md)
+* [open](open.md)
 
-* [test](docs/test.md)
+* [test](test.md)
 
-* [submit](docs/submit.md)
+* [submit](submit.md)
 
-* [compile](docs/compile.md)
+* [compile](compile.md)
 
-* [clean](docs/clean.md)
+* [clean](clean.md)
 
-* [getval/setval](docs/getsetval.md)
+* [getval/setval](getsetval.md)

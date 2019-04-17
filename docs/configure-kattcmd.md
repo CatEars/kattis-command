@@ -89,4 +89,4 @@ any problem it should also use your newly defined compilation command.
 That is all for this tutorial. Hope you found it a little bit
 interesting! If you want to look at a complete list of configuration
 options you should head over to
-the [manual for the getval/setval command](docs/getsetval.md).
+the [manual for the getval/setval command](getsetval.md).
