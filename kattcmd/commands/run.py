@@ -19,7 +19,7 @@ def RunPythonAgainstTests(bus, inputs, problemname):
 
     def RunAgainstSingleInput(inputfile):
         abspath = os.path.abspath(inputfile)
-        command = 'python {} < {}'.format(executable, abspath)
+        command = 'python3 {} < {}'.format(executable, abspath)
         try:
             output = subprocess.check_output(
                 command,
