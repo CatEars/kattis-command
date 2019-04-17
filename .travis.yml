@@ -6,9 +6,10 @@ stages:
   - test
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
     packages:
-      - gcc
-      - g++
+      - g++-7
 jobs:
   include:
     - stage: test
